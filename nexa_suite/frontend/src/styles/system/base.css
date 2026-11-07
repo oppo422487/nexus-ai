@@ -1,0 +1,29 @@
+/* ============================================================================
+   SYSTEM · BASE  — element resets, typography defaults, scrollbars, focus
+   Token-driven. Loaded after the legacy layer so the design system wins.
+   ========================================================================== */
+body {
+  font-family: var(--nx-font-sans);
+  color: var(--nx-text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection { background: rgba(34, 211, 238, 0.28); color: #f0fbff; }
+
+* { scrollbar-width: thin; scrollbar-color: rgba(99, 130, 210, 0.4) transparent; }
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb {
+  border-radius: var(--nx-radius-pill);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  background-color: rgba(80, 110, 190, 0.4);
+}
+*::-webkit-scrollbar-thumb:hover { background-color: rgba(120, 150, 230, 0.6); }
+
+:where(button, a, input, textarea, select, [tabindex]):focus-visible {
+  outline: none;
+  box-shadow: var(--nx-focus-ring);
+  border-radius: var(--nx-radius-sm);
+}

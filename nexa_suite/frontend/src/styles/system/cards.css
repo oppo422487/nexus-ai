@@ -1,0 +1,139 @@
+/* ---------------------------------------------------------------------------
+   1. SURFACE SYSTEM — frosted crystal panels
+   ------------------------------------------------------------------------- */
+.nx-card,
+.nx-hero,
+.nx-launch-card,
+.panel-card,
+.command-hero,
+.quick-section,
+.quick-card,
+.page-card,
+.page-surface,
+.activity-card,
+.settings-card,
+.security-card,
+.preference-card,
+.addressing-card,
+.onboarding-card,
+.onboarding-feature-card,
+.launcher-card,
+.web-answer-card,
+.chat-shell,
+.dashboard-chat-card,
+.dashboard-service-card,
+.dashboard-system-card,
+.dashboard-metric,
+.dashboard-hero,
+.command-input-card,
+.command-result-card,
+.command-analysis-card,
+.command-history-panel,
+.command-console,
+.command-editor,
+.mic-permission-card,
+.voice-panel,
+.voice-session-card,
+.voice-mode-card,
+.voice-command-box,
+.real-listening-panel,
+.real-mic-status-card,
+.speech-readiness-card,
+.speech-support-panel,
+.system-status-panel,
+.system-status-card,
+.database-status-panel,
+.audit-health-panel,
+.audit-preview-panel,
+.backend-preview-card,
+.backend-refresh-panel,
+.migration-preview-panel,
+.file-search-panel,
+.document-preview-card,
+.roadmap-panel,
+.timeline-panel,
+.simulated-transcript-card,
+.profile-preview-card,
+.action-preview-card,
+.action-confirmation-card,
+.reminder-item,
+.push-to-talk-panel,
+.setup-summary,
+.module-console,
+.module-enhanced,
+.entities-box,
+.safety-notice-box {
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-lg);
+  background: var(--nx-glass-1);
+  box-shadow: var(--nx-elev-3);
+}
+
+/* Backdrop blur reserved for large top-level surfaces (perf + clarity). */
+.nx-card,
+.nx-hero,
+.dashboard-hero,
+.command-hero,
+.chat-shell,
+.dashboard-chat-card,
+.dashboard-service-card,
+.dashboard-system-card,
+.settings-card,
+.security-card,
+.launcher-card,
+.web-answer-card,
+.onboarding-card,
+.command-history-panel,
+.voice-panel,
+.system-status-panel,
+.push-to-talk-panel,
+.mic-permission-card {
+  backdrop-filter: blur(var(--nx-glass-blur)) saturate(140%);
+  -webkit-backdrop-filter: blur(var(--nx-glass-blur)) saturate(140%);
+}
+
+/* Hero surfaces carry a soft accent halo. */
+.nx-hero,
+.dashboard-hero,
+.command-hero,
+.onboarding-card {
+  box-shadow: var(--nx-elev-3), var(--nx-glow-accent);
+}
+
+.nx-card-title svg,
+.nx-page-head svg { filter: drop-shadow(0 0 6px rgba(129, 140, 248, 0.5)); }
+
+/* Glossy convex accent-icon badges. */
+.nx-page-head-icon,
+.nx-tile-icon,
+.onboarding-feature-number,
+.dashboard-service-badge {
+  background:
+    radial-gradient(circle at 32% 26%, rgba(255,255,255,0.4), transparent 44%),
+    linear-gradient(150deg, rgba(99,102,241,0.55), rgba(34,211,238,0.35));
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,0.5),
+    inset 0 -3px 8px rgba(0,0,0,0.4),
+    0 6px 18px -6px rgba(56,132,255,0.55);
+}
+
+/* Interactive card lift — subtle hover only. */
+.dashboard-metric,
+.dashboard-service-card,
+.launcher-card,
+.onboarding-feature-card,
+.nx-tile {
+  transition: transform var(--nx-dur-base) var(--nx-ease),
+              box-shadow var(--nx-dur-base) var(--nx-ease),
+              border-color var(--nx-dur-base) var(--nx-ease);
+}
+.dashboard-metric:hover,
+.dashboard-service-card:hover,
+.launcher-card:hover,
+.onboarding-feature-card:hover,
+.nx-tile:hover {
+  transform: translateY(-3px);
+  border-color: var(--nx-border-strong);
+  box-shadow: var(--nx-elev-3), var(--nx-glow-accent);
+}
+

@@ -1,0 +1,2 @@
+"""Assistant safety routing."""
+

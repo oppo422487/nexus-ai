@@ -1,0 +1,253 @@
+/* ============================================================================
+   SYSTEM · DASHBOARD  — AI Command Center hero
+   Component styling for the Command Center hero zone. Token-driven, part of the
+   design system (not an overlay). Establishes the top-of-page hierarchy: the
+   live AI core, greeting, status, and at-a-glance activity.
+   ========================================================================== */
+
+.dash-hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-6);
+  padding: var(--nx-space-6) var(--nx-space-7);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-xl);
+  background: var(--nx-glass-1);
+  box-shadow: var(--nx-elev-3), var(--nx-glow-accent);
+  backdrop-filter: blur(var(--nx-glass-blur)) saturate(140%);
+  -webkit-backdrop-filter: blur(var(--nx-glass-blur)) saturate(140%);
+  overflow: hidden;
+}
+
+.dash-hero-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(560px circle at 10% -30%, rgba(99, 102, 241, 0.22), transparent 60%),
+    radial-gradient(420px circle at 105% 130%, rgba(34, 211, 238, 0.14), transparent 58%);
+}
+
+.dash-hero-core { position: relative; flex-shrink: 0; }
+
+.dash-hero-main { position: relative; flex: 1; min-width: 0; }
+
+.dash-hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 var(--nx-space-2);
+  font-size: var(--nx-fs-2xs);
+  font-weight: var(--nx-fw-bold);
+  letter-spacing: var(--nx-tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--nx-cyan);
+}
+.dash-hero-eyebrow svg { filter: drop-shadow(0 0 6px rgba(34, 211, 238, 0.6)); }
+
+.dash-hero-title {
+  margin: 0;
+  font-size: var(--nx-fs-2xl);
+  font-weight: var(--nx-fw-bold);
+  letter-spacing: var(--nx-tracking-tight);
+  line-height: var(--nx-lh-tight);
+  color: var(--nx-text);
+}
+
+.dash-hero-sub {
+  margin: var(--nx-space-2) 0 0;
+  font-size: var(--nx-fs-md);
+  color: var(--nx-text-dim);
+}
+
+.dash-hero-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nx-space-3);
+  margin-top: var(--nx-space-5);
+}
+.dash-hero-stat {
+  display: flex;
+  flex-direction: column;
+  min-width: 96px;
+  padding: var(--nx-space-3) var(--nx-space-4);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-md);
+  background: var(--nx-glass-2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), var(--nx-elev-2);
+}
+.dash-hero-stat strong {
+  font-size: var(--nx-fs-xl);
+  font-weight: var(--nx-fw-bold);
+  color: var(--nx-text);
+  line-height: 1;
+}
+.dash-hero-stat span {
+  margin-top: var(--nx-space-1);
+  font-size: var(--nx-fs-2xs);
+  letter-spacing: var(--nx-tracking-wide);
+  text-transform: uppercase;
+  color: var(--nx-text-mute);
+}
+
+.dash-hero-status {
+  position: absolute;
+  top: var(--nx-space-5);
+  right: var(--nx-space-6);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nx-space-2);
+  font-size: var(--nx-fs-xs);
+  font-weight: var(--nx-fw-medium);
+  color: var(--nx-text-mute);
+}
+.dash-hero-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.dash-hero-dot.ok { background: var(--nx-success); box-shadow: 0 0 10px rgba(52, 211, 153, 0.85); }
+.dash-hero-dot.warn { background: var(--nx-warning); box-shadow: 0 0 10px rgba(251, 191, 36, 0.85); }
+
+@media (max-width: 1180px) {
+  .dash-hero { flex-direction: column; align-items: flex-start; gap: var(--nx-space-4); }
+  .dash-hero-status { position: static; align-self: flex-start; }
+}
+
+/* Advanced YouTube controller */
+.youtube-control-card {
+  border-color: color-mix(in srgb, #ff3040 34%, var(--nx-border));
+  background:
+    radial-gradient(520px circle at 100% 0%, rgba(255, 48, 64, 0.10), transparent 58%),
+    var(--nx-glass-1);
+}
+
+.youtube-brand-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 4px;
+  background: #ff3040;
+  box-shadow: 0 0 14px rgba(255, 48, 64, 0.75);
+}
+
+.youtube-now-playing,
+.youtube-search-row,
+.youtube-command-row,
+.youtube-sliders label {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-3);
+}
+
+.youtube-now-playing {
+  justify-content: space-between;
+  padding: var(--nx-space-4);
+  margin-bottom: var(--nx-space-4);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-md);
+  background: rgba(2, 6, 23, 0.38);
+}
+
+.youtube-now-playing div { display: grid; gap: 4px; min-width: 0; }
+.youtube-now-playing small { color: var(--nx-text-mute); }
+.youtube-now-playing strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.youtube-now-playing > span { flex-shrink: 0; color: var(--nx-text-dim); font-variant-numeric: tabular-nums; }
+
+.youtube-search-row,
+.youtube-command-row {
+  padding: var(--nx-space-3) var(--nx-space-4);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-md);
+  background: var(--nx-glass-2);
+}
+
+.youtube-search-row input,
+.youtube-command-row input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  color: var(--nx-text);
+  background: transparent;
+}
+
+.youtube-control-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--nx-space-2);
+  margin: var(--nx-space-4) 0;
+}
+
+.youtube-control-grid .nx-btn { justify-content: center; }
+.youtube-control-grid .danger { color: var(--nx-danger, #fb7185); }
+
+.youtube-sliders { margin-bottom: var(--nx-space-4); }
+.youtube-sliders label span { min-width: 92px; color: var(--nx-text-dim); }
+.youtube-sliders input { flex: 1; accent-color: #ff3040; }
+
+.youtube-command-row { margin-top: var(--nx-space-2); }
+.youtube-control-message,
+.youtube-timer-message { margin: var(--nx-space-3) 0 0; color: var(--nx-text-mute); font-size: var(--nx-fs-xs); }
+.youtube-timer-message { color: var(--nx-cyan); }
+
+@media (max-width: 900px) {
+  .youtube-control-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .youtube-now-playing { align-items: flex-start; flex-direction: column; }
+}
+
+.image-generation-card {
+  background:
+    radial-gradient(480px circle at 100% 0%, rgba(178, 77, 255, 0.10), transparent 58%),
+    var(--nx-glass-1);
+}
+
+.image-generation-copy {
+  margin: 0 0 var(--nx-space-4);
+  color: var(--nx-text-dim);
+}
+
+.image-generation-preview {
+  display: block;
+  width: min(100%, 520px);
+  margin: var(--nx-space-4) auto 0;
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-lg);
+  box-shadow: var(--nx-elev-3), 0 0 30px rgba(178, 77, 255, 0.12);
+}
+.image-job-list { display: grid; gap: 6px; margin-top: var(--nx-space-3); }
+.image-job-list span { display: flex; justify-content: space-between; color: var(--nx-text-dim); font-size: var(--nx-fs-xs); }
+.image-gallery { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-top: var(--nx-space-3); }
+.image-gallery img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 8px; cursor: pointer; border: 1px solid var(--nx-border); }
+
+.system-control-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--nx-space-2);
+}
+
+.system-control-actions .nx-btn { justify-content: center; }
+
+.system-close-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--nx-space-3);
+  margin-top: var(--nx-space-3);
+}
+
+.system-close-row select {
+  min-width: 0;
+  padding: 0 var(--nx-space-3);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-md);
+  color: var(--nx-text);
+  background: var(--nx-glass-2);
+}
+
+.content-writer-fields { display: grid; grid-template-columns: 1fr auto; gap: var(--nx-space-3); }
+.content-writer-fields input, .content-writer-fields select, .content-writer-fields textarea {
+  min-width: 0; padding: var(--nx-space-3); border: 1px solid var(--nx-border); border-radius: var(--nx-radius-md); color: var(--nx-text); background: var(--nx-glass-2);
+}
+.content-writer-fields textarea { grid-column: 1 / -1; resize: vertical; }
+.content-writer-fields button { grid-column: 1 / -1; justify-self: start; }
+.content-history { display: grid; gap: 6px; margin-top: var(--nx-space-3); }
+.content-history a { display: flex; justify-content: space-between; color: var(--nx-cyan); text-decoration: none; }
+.performance-exports { display: flex; gap: 6px; }
+.performance-intents { display: grid; gap: 7px; margin-top: var(--nx-space-4); }
+.performance-intents div { display: flex; justify-content: space-between; padding: 7px 10px; border-radius: 8px; background: var(--nx-glass-2); color: var(--nx-text-dim); }

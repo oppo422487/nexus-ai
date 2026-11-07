@@ -1,0 +1,3 @@
+# Additional dependencies for the adapted public community plugins
+winsdk==1.0.0b10; sys_platform == "win32"
+soundfile>=0.12,<1

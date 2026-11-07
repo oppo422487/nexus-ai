@@ -1,0 +1,128 @@
+/* ============================================================================
+   SYSTEM · AI MODELS  — styling for the Settings → AI Models section.
+   Token-driven, reuses the glass/neon language of the rest of the settings.
+   ========================================================================== */
+
+.nx-seg.nx-seg-wrap {
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.nx-hint {
+  color: var(--nx-text-dim, rgba(200, 220, 255, 0.6));
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ---- Provider cards -------------------------------------------------- */
+.nx-ai-provider {
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-md, 12px);
+  padding: 12px;
+  background: var(--nx-glass-1);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.nx-ai-provider + .nx-ai-provider { margin-top: 10px; }
+
+.nx-ai-provider-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.nx-ai-provider-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.nx-ai-provider-desc {
+  color: var(--nx-text-dim, rgba(200, 220, 255, 0.6));
+  font-size: 12px;
+}
+
+.nx-ai-key {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.nx-ai-key .nx-input { flex: 1; font-family: var(--nx-font-mono, ui-monospace, monospace); letter-spacing: 0.04em; }
+
+.nx-ai-provider-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+.nx-ai-model-select {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+}
+.nx-ai-model-select > span { color: var(--nx-text-dim, rgba(200, 220, 255, 0.6)); }
+.nx-ai-provider-row .nx-btn { white-space: nowrap; }
+
+.nx-ai-test-result {
+  font-size: 12px;
+  color: var(--nx-text-dim, rgba(200, 220, 255, 0.7));
+}
+
+/* ---- Failover priority (drag-and-drop) ------------------------------- */
+.nx-ai-priority {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.nx-ai-priority-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--nx-radius-sm, 9px);
+  border: 1px solid var(--nx-border);
+  background: var(--nx-glass-1);
+  cursor: grab;
+  transition: border-color 160ms var(--nx-ease, ease), transform 160ms var(--nx-ease, ease), opacity 160ms;
+}
+.nx-ai-priority-item:hover { border-color: var(--nx-border-strong); }
+.nx-ai-priority-item.dragging { opacity: 0.5; border-color: var(--nx-border-accent); }
+.nx-ai-priority-item:active { cursor: grabbing; }
+.nx-ai-grip { color: var(--nx-text-dim, rgba(200, 220, 255, 0.5)); flex: none; }
+.nx-ai-priority-index {
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--nx-grad-accent);
+  color: #04060e;
+  flex: none;
+}
+.nx-ai-priority-name { flex: 1; font-weight: 600; }
+
+/* ---- Analytics grid -------------------------------------------------- */
+.nx-ai-analytics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.nx-ai-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px;
+  border-radius: var(--nx-radius-sm, 9px);
+  border: 1px solid var(--nx-border);
+  background: var(--nx-glass-inset);
+}
+.nx-ai-stat.wide { grid-column: 1 / -1; }
+.nx-ai-stat small { color: var(--nx-text-dim, rgba(200, 220, 255, 0.6)); font-size: 11px; }
+.nx-ai-stat strong { font-size: 14px; }
+.nx-status-warn { color: var(--nx-warning, #ffb347); }

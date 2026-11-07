@@ -1,0 +1,87 @@
+/* ============================================================================
+   SYSTEM · PAGE HERO  — the unified premium page header
+   One header language for every page so the whole app reads as one OS.
+   Token-driven; part of the design system.
+   ========================================================================== */
+
+.nxos-hero {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--nx-space-5);
+  padding: var(--nx-space-6) var(--nx-space-7);
+  margin-bottom: var(--nx-space-2);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-xl);
+  background: var(--nx-glass-1);
+  box-shadow: var(--nx-elev-3);
+  backdrop-filter: blur(var(--nx-glass-blur)) saturate(140%);
+  -webkit-backdrop-filter: blur(var(--nx-glass-blur)) saturate(140%);
+  overflow: hidden;
+}
+.nxos-hero-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(520px circle at 8% -40%, rgba(99, 102, 241, 0.18), transparent 60%);
+}
+
+.nxos-hero-lead { position: relative; display: flex; align-items: center; gap: var(--nx-space-4); min-width: 0; }
+
+.nxos-hero-icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  border-radius: var(--nx-radius-md);
+  color: #fff;
+  background:
+    radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.45), transparent 46%),
+    linear-gradient(150deg, rgba(99, 102, 241, 0.65), rgba(34, 211, 238, 0.4));
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.5),
+    inset 0 -3px 8px rgba(0, 0, 0, 0.4),
+    0 6px 18px -6px rgba(56, 132, 255, 0.6);
+}
+.nxos-hero-icon svg { width: var(--nx-icon-xl); height: var(--nx-icon-xl); }
+
+.nxos-hero-text { min-width: 0; }
+.nxos-hero-eyebrow {
+  margin: 0 0 var(--nx-space-1);
+  font-size: var(--nx-fs-2xs);
+  font-weight: var(--nx-fw-bold);
+  letter-spacing: var(--nx-tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--nx-cyan);
+}
+.nxos-hero-title {
+  margin: 0;
+  font-size: var(--nx-fs-2xl);
+  font-weight: var(--nx-fw-bold);
+  letter-spacing: var(--nx-tracking-tight);
+  line-height: var(--nx-lh-tight);
+  color: var(--nx-text);
+}
+.nxos-hero-title span {
+  background: var(--nx-grad-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.nxos-hero-desc {
+  margin: var(--nx-space-2) 0 0;
+  max-width: 62ch;
+  font-size: var(--nx-fs-md);
+  line-height: var(--nx-lh-snug);
+  color: var(--nx-text-dim);
+}
+.nxos-hero-meta { display: flex; flex-wrap: wrap; gap: var(--nx-space-2); margin-top: var(--nx-space-4); }
+
+.nxos-hero-actions { position: relative; display: flex; align-items: center; gap: var(--nx-space-3); flex-shrink: 0; }
+
+@media (max-width: 980px) {
+  .nxos-hero { flex-direction: column; }
+  .nxos-hero-actions { width: 100%; }
+}

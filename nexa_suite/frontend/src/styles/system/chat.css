@@ -1,0 +1,43 @@
+/* ============================================================================
+   SYSTEM · CHAT  — premium conversation surface
+   ========================================================================== */
+
+.nxos-chat-page { display: flex; flex-direction: column; min-height: 0; }
+
+.nxos-chat {
+  display: flex;
+  flex-direction: column;
+  min-height: 460px;
+  flex: 1;
+}
+.nxos-chat-thread { flex: 1; overflow-y: auto; min-height: 0; }
+
+.nxos-chat-empty {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--nx-space-4);
+  padding: var(--nx-space-9) var(--nx-space-6);
+  text-align: center;
+}
+.nxos-chat-empty h3 {
+  margin: 0;
+  font-size: var(--nx-fs-lg);
+  font-weight: var(--nx-fw-semibold);
+  color: var(--nx-text);
+}
+.nxos-chat-empty p {
+  margin: 0;
+  max-width: 42ch;
+  font-size: var(--nx-fs-md);
+  color: var(--nx-text-mute);
+}
+
+.nxos-composer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-3);
+  margin-top: var(--nx-space-4);
+}

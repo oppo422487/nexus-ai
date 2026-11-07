@@ -1,0 +1,4 @@
+# Optional; imported only when explicitly using translation or transcription.
+ctranslate2>=4.8,<5
+sentencepiece>=0.2,<0.3
+faster-whisper>=1.2,<2

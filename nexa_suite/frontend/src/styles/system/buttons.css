@@ -1,0 +1,132 @@
+/* ---------------------------------------------------------------------------
+   2. BUTTON SYSTEM
+   ------------------------------------------------------------------------- */
+.nx-btn,
+.nx-icon-btn,
+.mode-badge,
+.command-example-button,
+.command-history-button,
+.file-search-button,
+.dashboard-system-button,
+.backend-preview-button,
+.backend-refresh-button,
+.real-listening-button,
+.voice-session-button,
+.speech-support-button,
+.system-status-button,
+.database-status-button,
+.audit-health-button,
+.audit-sync-button,
+.migration-preview-button,
+.permission-refresh-button,
+.mic-permission-button,
+.mic-cache-button,
+.reset-button,
+.history-save-button,
+.transcript-action-button {
+  transition: transform var(--nx-dur-fast) var(--nx-ease),
+              box-shadow var(--nx-dur-base) var(--nx-ease),
+              filter var(--nx-dur-base) var(--nx-ease),
+              border-color var(--nx-dur-base) var(--nx-ease);
+}
+
+/* Primary */
+.nx-btn {
+  border: 1px solid rgba(140, 178, 255, 0.45);
+  background: linear-gradient(180deg, rgba(129,140,248,0.95), rgba(99,102,241,0.82) 46%, rgba(139,92,246,0.86));
+  box-shadow: var(--nx-elev-control);
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.35);
+}
+.nx-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: var(--nx-elev-control-hover); filter: brightness(1.07); }
+.nx-btn:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.12);
+  filter: brightness(0.97);
+}
+.nx-btn.ghost {
+  background: var(--nx-glass-2);
+  border-color: var(--nx-border-strong);
+  color: #c9d6ff;
+  box-shadow: var(--nx-elev-control);
+}
+.nx-btn.danger {
+  background: linear-gradient(180deg, rgba(248,113,113,0.4), rgba(220,38,38,0.34));
+  border-color: rgba(248,113,113,0.5); color: #ffe4e4;
+}
+.nx-btn.amber {
+  background: linear-gradient(180deg, rgba(251,191,36,0.34), rgba(217,119,6,0.3));
+  border-color: rgba(251,191,36,0.5); color: #fff3d6;
+}
+
+/* Secondary / utility raised-glass buttons */
+.nx-icon-btn,
+.mode-badge,
+.command-example-button,
+.command-history-button,
+.file-search-button,
+.dashboard-system-button,
+.backend-preview-button,
+.backend-refresh-button,
+.real-listening-button,
+.voice-session-button,
+.speech-support-button,
+.system-status-button,
+.database-status-button,
+.audit-health-button,
+.audit-sync-button,
+.migration-preview-button,
+.permission-refresh-button,
+.mic-permission-button,
+.mic-cache-button,
+.history-save-button,
+.transcript-action-button {
+  border: 1px solid var(--nx-border-strong);
+  background: var(--nx-glass-2);
+  box-shadow: var(--nx-elev-control);
+}
+.nx-icon-btn:hover,
+.mode-badge:hover,
+.command-example-button:hover,
+.command-history-button:hover,
+.file-search-button:hover,
+.dashboard-system-button:hover,
+.backend-preview-button:hover,
+.backend-refresh-button:hover,
+.real-listening-button:hover,
+.voice-session-button:hover,
+.speech-support-button:hover,
+.system-status-button:hover,
+.database-status-button:hover,
+.audit-health-button:hover,
+.audit-sync-button:hover,
+.migration-preview-button:hover,
+.permission-refresh-button:hover,
+.mic-permission-button:hover,
+.mic-cache-button:hover,
+.history-save-button:hover,
+.transcript-action-button:hover {
+  transform: translateY(-2px);
+  border-color: var(--nx-border-accent);
+  box-shadow: var(--nx-elev-control-hover);
+}
+.nx-icon-btn:active { transform: translateY(1px); }
+
+/* Primary CTA — luminous accent */
+.nx-cmd-send,
+.onboarding-primary-button {
+  background:
+    radial-gradient(circle at 34% 26%, rgba(255,255,255,0.4), transparent 46%),
+    var(--nx-grad-accent);
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,0.55),
+    inset 0 -3px 8px rgba(0,0,0,0.35),
+    0 8px 22px -6px rgba(34,132,255,0.66);
+  color: var(--nx-text-on-accent);
+  transition: transform var(--nx-dur-fast) var(--nx-ease), box-shadow var(--nx-dur-base), filter var(--nx-dur-base);
+}
+.nx-cmd-send:hover:not(:disabled),
+.onboarding-primary-button:hover:not(:disabled) { transform: translateY(-2px) scale(1.02); filter: brightness(1.06); }
+.nx-cmd-send:active:not(:disabled),
+.onboarding-primary-button:active:not(:disabled) { transform: translateY(1px) scale(0.99); }
+

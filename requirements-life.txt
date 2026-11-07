@@ -1,0 +1,7 @@
+# Lightweight adapters; no alternate UI runtime.
+spotipy>=2.26,<3
+pytesseract>=0.3.13,<0.4
+pypdfium2>=4,<6
+openpyxl>=3.1,<4
+mcp>=1.30,<2
+beautifulsoup4>=4.12,<5

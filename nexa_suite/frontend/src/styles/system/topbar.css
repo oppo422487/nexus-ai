@@ -1,0 +1,61 @@
+
+/* ---- Topbar / command bar ------------------------------------------- */
+.nxos-topbar {
+  gap: var(--nx-space-4);
+  padding: var(--nx-space-3) var(--nx-space-6);
+  border-bottom: 1px solid var(--nx-border);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0) 60%),
+    linear-gradient(180deg, rgba(12,18,36,0.72), rgba(6,9,22,0.62));
+  backdrop-filter: blur(var(--nx-glass-blur-strong)) saturate(140%);
+}
+
+.nxos-ai-status { display: flex; align-items: center; gap: var(--nx-space-3); flex-shrink: 0; }
+.nxos-ai-orb { width: 12px; height: 12px; border-radius: 50%; position: relative; }
+.nxos-ai-orb.online {
+  background: radial-gradient(circle at 32% 30%, #d7fbff, var(--nx-cyan) 70%);
+  box-shadow: 0 0 12px rgba(34,211,238,0.85), 0 0 0 4px rgba(34,211,238,0.12);
+}
+.nxos-ai-orb.offline { background: var(--nx-text-faint); box-shadow: 0 0 0 4px rgba(120,140,180,0.08); }
+.nxos-ai-status-text { display: flex; flex-direction: column; line-height: 1.1; }
+.nxos-ai-status-text strong { font-size: var(--nx-fs-md); font-weight: var(--nx-fw-semibold); color: var(--nx-text); }
+.nxos-ai-status-text span { font-size: var(--nx-fs-2xs); }
+.nxos-ai-status-text .on { color: var(--nx-cyan); }
+.nxos-ai-status-text .off { color: var(--nx-text-faint); }
+
+.nxos-command-bar {
+  flex: 1; max-width: 620px; margin: 0 auto;
+  border: 1px solid var(--nx-border-strong);
+  background: var(--nx-glass-inset);
+  box-shadow: var(--nx-elev-inset);
+}
+.nxos-command-bar:focus-within { border-color: var(--nx-border-accent); box-shadow: var(--nx-elev-inset), var(--nx-glow-cyan); }
+.nxos-command-bar svg { color: var(--nx-text-mute); }
+.nxos-kbd {
+  display: inline-flex; align-items: center; gap: 3px;
+  padding: 3px 8px;
+  border: 1px solid var(--nx-border-strong);
+  border-radius: var(--nx-radius-xs);
+  background: linear-gradient(180deg, rgba(30,42,70,0.9), rgba(16,24,44,0.9));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.14), 0 2px 3px rgba(0,0,0,0.5);
+  color: var(--nx-text-mute); font-size: var(--nx-fs-2xs); font-weight: var(--nx-fw-semibold);
+}
+
+.nxos-topbar-actions { display: flex; align-items: center; gap: var(--nx-space-3); flex-shrink: 0; }
+.nxos-profile { gap: var(--nx-space-3); }
+.nxos-profile-text { display: flex; flex-direction: column; line-height: 1.1; }
+.nxos-profile-text strong { font-size: var(--nx-fs-sm); color: var(--nx-text); }
+.nxos-profile-text span { font-size: var(--nx-fs-2xs); color: var(--nx-violet); }
+
+/* ---- Collapsed rail (900px): icon-only, keep chips visible ---------- */
+@media (max-width: 900px) {
+  .nxos-nav-text,
+  .nxos-nav-label,
+  .nxos-brand-text,
+  .nxos-rail-status,
+  .nxos-ai-status-text,
+  .nxos-profile-text { display: none; }
+  .nxos-nav-icon { display: grid; }
+  .nxos-nav-item { justify-content: center; padding: var(--nx-space-2); }
+  .nxos-command-bar { max-width: none; }
+}

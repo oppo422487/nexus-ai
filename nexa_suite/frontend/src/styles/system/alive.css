@@ -1,0 +1,149 @@
+/* ============================================================================
+   SYSTEM · ALIVE  (Phase F)
+   The UI's living layer. Subtle, always-on breathing/energy on existing
+   surfaces (no layout change), intensified while the AI is busy via the root
+   [data-ai-state] attribute set by the Environment's ActivityDriver. GPU-light
+   (opacity/transform only), fully disabled under reduced motion.
+   ========================================================================== */
+
+/* Defaults so the UI looks correct before/without the Core driver (no WebGL,
+   reduced motion, or paused). The Environment's ActivityDriver overwrites these
+   each frame, phase-locked to the Earth. */
+:root {
+  --nx-core-pulse: 0.5;
+  --nx-core-energy: 0;
+  --nx-ai-thinking: 0;
+  --nx-ai-command: 0;
+  --nx-ai-voice: 0;
+}
+
+/* ---- Cards: a faint edge glow that breathes ------------------------- */
+.nx-card { position: relative; }
+.nx-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 0 34px -11px var(--nx-cyan), inset 0 0 1px rgba(34, 211, 238, 0.35);
+  opacity: 0.35;
+  animation: nxBreathe 6s var(--nx-ease-in-out) infinite;
+}
+@keyframes nxBreathe {
+  0%, 100% { opacity: 0.24; }
+  50% { opacity: 0.62; }
+}
+:root[data-ai-state="active"] .nx-card::after { animation-duration: 4s; }
+:root[data-ai-state="thinking"] .nx-card::after {
+  animation-duration: 2.4s;
+  box-shadow: inset 0 0 26px -10px var(--nx-cyan);
+}
+
+/* ---- Status dots + AI orb: living pulse ----------------------------- */
+.nxos-status-dot,
+.nxos-ai-orb.online {
+  animation: nxDotPulse 3.2s var(--nx-ease-in-out) infinite;
+}
+@keyframes nxDotPulse {
+  0%, 100% { transform: scale(1); filter: brightness(1); }
+  50% { transform: scale(1.18); filter: brightness(1.35); }
+}
+:root[data-ai-state="thinking"] .nxos-status-dot,
+:root[data-ai-state="thinking"] .nxos-ai-orb.online { animation-duration: 1.4s; }
+
+/* ---- Active nav item: a slow scanning sweep ------------------------- */
+.nxos-nav-item.active::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    rgba(160, 220, 255, 0.14) 48%,
+    transparent 60%
+  );
+  background-size: 220% 100%;
+  animation: nxScan 5s var(--nx-ease) infinite;
+  mix-blend-mode: screen;
+}
+@keyframes nxScan {
+  0% { background-position: 150% 0; }
+  60%, 100% { background-position: -60% 0; }
+}
+:root[data-ai-state="thinking"] .nxos-nav-item.active::after { animation-duration: 2.2s; }
+
+/* ---- Sidebar icons: gentle breathing while busy --------------------- */
+:root[data-ai-state="thinking"] .nxos-nav-icon {
+  animation: nxIconBreathe 1.8s var(--nx-ease-in-out) infinite;
+}
+@keyframes nxIconBreathe {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.3); }
+}
+
+/* ---- Primary send CTA: soft glow that brightens under load ---------- */
+.nx-cmd-send {
+  animation: nxSendGlow 3.6s var(--nx-ease-in-out) infinite;
+}
+@keyframes nxSendGlow {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.12); }
+}
+.nx-cmd-send:hover:not(:disabled) { animation: none; }
+:root[data-ai-state="thinking"] .nx-cmd-send { animation-duration: 1.6s; }
+
+/* ============================================================================
+   CORE SYNCHRONIZATION — a few focal elements beat with the Earth.
+   Driven by --nx-core-pulse (heartbeat) + --nx-core-energy (activity), which
+   the ActivityDriver writes phase-locked to the globe. Applied to single
+   elements only, so the continuous pulse never forces a broad style recalc.
+   ========================================================================== */
+
+/* Dashboard hero — powered directly by the Core: a glow that pulses with the
+   heartbeat and swells with activity. */
+.dash-hero {
+  box-shadow:
+    var(--nx-elev-3),
+    0 0 calc(28px + var(--nx-core-energy) * 46px) -18px
+      rgba(34, 211, 238, calc(0.22 + var(--nx-core-pulse) * 0.12 + var(--nx-core-energy) * 0.4));
+}
+
+/* Sidebar brand orb — the Core's signal reaching the console. */
+.nx-brand-orb {
+  filter: brightness(calc(1 + var(--nx-core-pulse) * 0.16 + var(--nx-core-energy) * 0.3));
+}
+
+/* Floating voice orb core — an extension of the Earth, breathing with it. */
+.nxi-orb-core {
+  filter: brightness(calc(1 + var(--nx-core-pulse) * 0.14 + var(--nx-core-energy) * 0.35));
+}
+
+/* ---- Cinematic modes: the DOM adopts the same mode as the 3D scene ----
+   thinking → cyan (default), command → warm-white confirmation flash,
+   voice → blue breathing. Applied to the hero only (single element). */
+:root[data-ai-mode="command"] .dash-hero {
+  box-shadow:
+    var(--nx-elev-3),
+    0 0 calc(30px + var(--nx-ai-command) * 64px) -14px
+      rgba(255, 240, 214, calc(0.2 + var(--nx-ai-command) * 0.55));
+}
+:root[data-ai-mode="voice"] .dash-hero {
+  box-shadow:
+    var(--nx-elev-3),
+    0 0 calc(28px + var(--nx-ai-voice) * 44px) -18px
+      rgba(80, 130, 255, calc(0.22 + var(--nx-ai-voice) * 0.4));
+}
+:root[data-ai-mode="command"] .nxos-nav-item.active::after { animation-duration: 1.4s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .nx-card::after,
+  .nxos-status-dot,
+  .nxos-ai-orb.online,
+  .nxos-nav-item.active::after,
+  .nxos-nav-icon,
+  .nx-cmd-send {
+    animation: none !important;
+  }
+}

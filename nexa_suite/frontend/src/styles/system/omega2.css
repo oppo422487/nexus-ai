@@ -1,0 +1,171 @@
+/* ============================================================================
+   SYSTEM · OMEGA-2  (Full OMEGA mode — the remaining static surfaces)
+   ----------------------------------------------------------------------------
+   Brings inputs, icons, toasts, scrollbars and click feedback up to the same
+   living intensity as cards/buttons/HUD. GPU-only (transform / opacity /
+   filter / gradient position). Fully reduced-motion gated. No layout changes,
+   no JS logic touched — decorative pseudo-elements are pointer-events:none.
+   ========================================================================== */
+
+/* ============================================================================
+   1 · INPUTS — animated focus energy + gradient underline scan
+   ========================================================================== */
+.nx-input:focus,
+.nx-select:focus,
+.command-lab-textarea:focus,
+.onboarding-input:focus,
+.command-history-search-input:focus,
+.simulated-transcript-input:focus,
+.nx-cmd-bar:focus-within,
+.dashboard-chat-input:focus-within,
+.chat-input:focus-within {
+  animation: nxFieldPulse 2.4s var(--nx-ease-in-out, ease-in-out) infinite;
+}
+@keyframes nxFieldPulse {
+  0%, 100% { box-shadow: var(--nx-elev-inset), 0 0 22px -6px rgba(46, 242, 255, 0.5); }
+  50%      { box-shadow: var(--nx-elev-inset), 0 0 34px -2px rgba(178, 77, 255, 0.7); }
+}
+
+/* Wrapper-type fields (which can host pseudo-elements) get a scanning
+   gradient underline on focus. Raw <input> elements just get the glow above. */
+.nx-cmd-bar,
+.dashboard-chat-input,
+.chat-input,
+.nx-field {
+  position: relative;
+}
+.nx-cmd-bar::after,
+.dashboard-chat-input::after,
+.chat-input::after,
+.nx-field::after {
+  content: "";
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 3px;
+  height: 1.5px;
+  border-radius: 2px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, var(--nx-cyan), var(--nx-magenta), transparent);
+  background-size: 220% 100%;
+  opacity: 0;
+  transition: opacity 220ms var(--nx-ease-out, ease-out);
+}
+.nx-cmd-bar:focus-within::after,
+.dashboard-chat-input:focus-within::after,
+.chat-input:focus-within::after,
+.nx-field:focus-within::after {
+  opacity: 0.9;
+  animation: nxFieldScan 2.2s linear infinite;
+}
+@keyframes nxFieldScan { to { background-position: 220% 0; } }
+
+/* ============================================================================
+   2 · ICONS — breathing glow + magnetic hover pop
+   ========================================================================== */
+.nx-icon-btn,
+.nxos-hero-icon,
+.nx-tile-icon,
+.nx-page-head-icon,
+.nxi-command-icon {
+  transition: transform 240ms var(--nx-ease-out, ease-out), filter 240ms var(--nx-ease-out, ease-out);
+}
+.nx-icon-btn:hover,
+.nxos-hero-icon:hover,
+.nx-tile-icon:hover {
+  transform: translateZ(0) scale(1.12) rotate(-3deg);
+  filter: drop-shadow(0 0 8px rgba(46, 242, 255, 0.7)) brightness(1.2);
+}
+.nxos-hero-icon,
+.nx-page-head-icon {
+  animation: nxIconGlow 4.5s var(--nx-ease-in-out, ease-in-out) infinite;
+}
+@keyframes nxIconGlow {
+  0%, 100% { filter: drop-shadow(0 0 3px rgba(46, 242, 255, 0.25)); }
+  50%      { filter: drop-shadow(0 0 10px rgba(46, 242, 255, 0.6)); }
+}
+
+/* ============================================================================
+   3 · NOTIFICATIONS / TOASTS — neon scanning edge by severity
+   ========================================================================== */
+.nxi-toast {
+  position: relative;
+  overflow: hidden;
+}
+.nxi-toast::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2.5px;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent, var(--nx-cyan), transparent);
+  background-size: 100% 240%;
+  animation: nxToastEdge 2.6s linear infinite;
+}
+.nxi-toast.success::before { background: linear-gradient(180deg, transparent, var(--nx-emerald), transparent); background-size: 100% 240%; }
+.nxi-toast.warning::before { background: linear-gradient(180deg, transparent, var(--nx-warning), transparent); background-size: 100% 240%; }
+.nxi-toast.error::before   { background: linear-gradient(180deg, transparent, var(--nx-danger),  transparent); background-size: 100% 240%; }
+@keyframes nxToastEdge { to { background-position: 0 240%; } }
+
+/* ============================================================================
+   4 · CLICK RIPPLE — spawned by OmegaFX at the pointer (pointer-events:none)
+   ========================================================================== */
+.nx-omega-ripple {
+  position: fixed;
+  z-index: 55;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border-radius: 50%;
+  pointer-events: none;
+  border: 1.5px solid rgba(46, 242, 255, 0.8);
+  box-shadow: 0 0 14px rgba(46, 242, 255, 0.6);
+  animation: nxRipple 620ms var(--nx-ease-out, ease-out) forwards;
+}
+@keyframes nxRipple {
+  0%   { transform: scale(0.3); opacity: 0.9; }
+  100% { transform: scale(6);   opacity: 0; }
+}
+
+/* ============================================================================
+   5 · MICRO-INTERACTIONS — universal press feedback + neon scrollbar
+   ========================================================================== */
+.nx-btn:active,
+.nxi-btn:active,
+.nx-icon-btn:active,
+.nxos-nav-item:active,
+.nx-tile:active {
+  transform: scale(0.97);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--nx-cyan), var(--nx-violet)) !important;
+  border-radius: 6px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--nx-cyan), var(--nx-magenta)) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nx-input:focus,
+  .nx-select:focus,
+  .command-lab-textarea:focus,
+  .onboarding-input:focus,
+  .command-history-search-input:focus,
+  .simulated-transcript-input:focus,
+  .nx-cmd-bar:focus-within,
+  .dashboard-chat-input:focus-within,
+  .chat-input:focus-within,
+  .nx-cmd-bar:focus-within::after,
+  .dashboard-chat-input:focus-within::after,
+  .chat-input:focus-within::after,
+  .nx-field:focus-within::after,
+  .nxos-hero-icon,
+  .nx-page-head-icon,
+  .nxi-toast::before {
+    animation: none !important;
+  }
+  .nx-omega-ripple { display: none; }
+}

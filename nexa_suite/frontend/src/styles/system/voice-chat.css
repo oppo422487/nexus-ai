@@ -1,0 +1,195 @@
+/* ============================================================================
+   SYSTEM · VOICE CHAT — live conversation panel (orb, waveform, bubbles).
+   Token-driven; GPU-only animations; reduced-motion gated.
+   ========================================================================== */
+.nxv-conversation { display: flex; flex-direction: column; gap: 14px; }
+
+/* ---- Banners -------------------------------------------------------- */
+.nxv-banner {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 12px; border-radius: var(--nx-radius-sm, 9px);
+  font-size: 12.5px; line-height: 1.4;
+  border: 1px solid var(--nx-border);
+}
+.nxv-banner.warn  { border-color: rgba(255, 179, 71, 0.4); color: #ffcf8f; background: rgba(255, 179, 71, 0.08); }
+.nxv-banner.error { border-color: rgba(255, 84, 112, 0.45); color: #ff9db0; background: rgba(255, 84, 112, 0.09); }
+
+/* ---- Orb + waveform stage ------------------------------------------- */
+.nxv-stage {
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  padding: 14px 0 6px;
+}
+.nxv-orb { position: relative; width: 92px; height: 92px; }
+.nxv-orb-core, .nxv-orb-ring {
+  position: absolute; inset: 0; border-radius: 50%; pointer-events: none;
+}
+.nxv-orb-core {
+  inset: 22%;
+  background: radial-gradient(circle at 40% 35%, var(--nx-cyan), var(--nx-blue) 60%, transparent 72%);
+  box-shadow: 0 0 26px -4px var(--nx-cyan);
+  animation: nxvBreathe 3.4s var(--nx-ease-in-out, ease-in-out) infinite;
+}
+.nxv-orb-ring { border: 1.5px solid rgba(46, 242, 255, 0.35); }
+.nxv-orb-ring.two { inset: -10%; border-color: rgba(178, 77, 255, 0.28); }
+
+/* state colours + motion */
+.nxv-orb.listening .nxv-orb-core { animation-duration: 1.2s; box-shadow: 0 0 34px -2px var(--nx-cyan); }
+.nxv-orb.listening .nxv-orb-ring { animation: nxvSpin 4s linear infinite; }
+.nxv-orb.thinking .nxv-orb-core {
+  background: radial-gradient(circle at 40% 35%, var(--nx-violet), var(--nx-indigo) 60%, transparent 72%);
+  box-shadow: 0 0 30px -3px var(--nx-violet); animation-duration: 0.9s;
+}
+.nxv-orb.speaking .nxv-orb-core {
+  background: radial-gradient(circle at 40% 35%, var(--nx-magenta), var(--nx-violet) 60%, transparent 72%);
+  box-shadow: 0 0 34px -2px var(--nx-magenta); animation: nxvSpeak 0.5s var(--nx-ease-in-out, ease-in-out) infinite;
+}
+.nxv-orb.speaking .nxv-orb-ring { animation: nxvSpin 2s linear infinite; }
+.nxv-orb.error .nxv-orb-core { background: radial-gradient(circle at 40% 35%, var(--nx-danger), transparent 72%); box-shadow: 0 0 24px -4px var(--nx-danger); }
+@keyframes nxvBreathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+@keyframes nxvSpeak  { 0%,100% { transform: scale(0.94); } 50% { transform: scale(1.14); } }
+@keyframes nxvSpin   { to { transform: rotate(360deg); } }
+
+/* waveform */
+.nxv-wave { display: flex; align-items: center; gap: 3px; height: 30px; }
+.nxv-wave span {
+  width: 3px; height: 6px; border-radius: 2px;
+  background: linear-gradient(180deg, var(--nx-cyan), var(--nx-violet));
+  opacity: 0.4;
+}
+.nxv-wave.on span {
+  animation: nxvWave 0.9s var(--nx-ease-in-out, ease-in-out) infinite;
+  animation-delay: calc(var(--i) * -0.07s);
+  opacity: 1;
+}
+.nxv-wave.speak span { background: linear-gradient(180deg, var(--nx-magenta), var(--nx-violet)); }
+@keyframes nxvWave { 0%,100% { transform: scaleY(0.35); } 50% { transform: scaleY(2.6); } }
+.nxv-state-label { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--nx-text-dim, rgba(200,220,255,0.6)); }
+
+/* ---- Thread --------------------------------------------------------- */
+.nxv-thread {
+  display: flex; flex-direction: column; gap: 8px;
+  max-height: 320px; overflow-y: auto; padding: 4px 2px;
+}
+.nxv-empty { text-align: center; color: var(--nx-text-dim, rgba(200,220,255,0.6)); font-size: 13px; padding: 18px 8px; }
+.nxv-bubble {
+  max-width: 82%; padding: 9px 12px; border-radius: 14px;
+  font-size: 13.5px; line-height: 1.5; border: 1px solid var(--nx-border);
+}
+.nxv-bubble p { margin: 0; }
+.nxv-bubble.user { align-self: flex-end; background: var(--nx-glass-2); border-bottom-right-radius: 4px; }
+.nxv-bubble.assistant { align-self: flex-start; background: var(--nx-glass-inset); border-bottom-left-radius: 4px; }
+.nxv-bubble.interim { opacity: 0.6; font-style: italic; }
+.nxv-bubble.thinking p { letter-spacing: 3px; animation: nxvDots 1.2s steps(3) infinite; }
+.nxv-bubble .nx-chip { margin-top: 6px; }
+@keyframes nxvDots { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
+
+/* ---- Controls ------------------------------------------------------- */
+.nxv-controls { display: flex; flex-wrap: wrap; gap: 8px; }
+.nxv-controls .nx-btn { display: inline-flex; align-items: center; gap: 6px; }
+.nxv-ptt { touch-action: none; user-select: none; }
+.nxv-note { font-size: 12px; color: var(--nx-text-dim, rgba(200,220,255,0.6)); margin: 0; }
+
+/* ---- Range sliders (Voice settings) --------------------------------- */
+.nxv-range {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 5px; border-radius: 4px; margin-top: 6px;
+  background: linear-gradient(90deg, var(--nx-cyan), var(--nx-violet));
+  outline: none; cursor: pointer;
+}
+.nxv-range::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #eaf7ff; border: 2px solid var(--nx-cyan);
+  box-shadow: 0 0 8px rgba(46, 242, 255, 0.6);
+}
+.nxv-range::-moz-range-thumb {
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #eaf7ff; border: 2px solid var(--nx-cyan);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nxv-orb-core, .nxv-orb-ring, .nxv-wave span, .nxv-bubble.thinking p { animation: none !important; }
+}
+
+/* ---- Dedicated voice room ------------------------------------------ */
+.nx-voice-page { width: 100%; min-width: 0; }
+.dashboard-voice-launch { display: grid; place-items: center; flex: 0 0 auto; padding: 0; border: 0; color: inherit; background: transparent; cursor: pointer; }
+.dashboard-voice-launch:hover { color: var(--nx-cyan); }
+.nx-voice-room {
+  --voice-level: .08;
+  position: relative; min-height: calc(100vh - 174px); overflow: hidden;
+  display: grid; grid-template-rows: auto minmax(390px, 1fr) auto auto;
+  border: 1px solid rgba(94, 119, 151, .2); border-radius: 20px;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(15, 45, 62, calc(.17 + var(--voice-level) * .2)), transparent 32%),
+    linear-gradient(145deg, rgba(6, 10, 15, .98), rgba(3, 7, 11, .96));
+  box-shadow: inset 0 1px rgba(255,255,255,.035), 0 28px 80px rgba(0,0,0,.36);
+  font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+}
+.nx-voice-room::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .24;
+  background-image: linear-gradient(rgba(107,153,177,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(107,153,177,.04) 1px, transparent 1px);
+  background-size: 34px 34px; mask-image: radial-gradient(circle at center, #000, transparent 78%);
+}
+.nx-voice-room-head { position: relative; z-index: 2; display: grid; grid-template-columns: 42px 1fr auto; align-items: center; gap: 14px; padding: 18px 20px; border-bottom: 1px solid rgba(100,131,153,.14); }
+.nx-voice-icon-control { width: 38px; height: 38px; display: grid; place-items: center; color: #8da3b1; border: 1px solid rgba(127,153,169,.2); border-radius: 10px; background: rgba(11,17,23,.72); cursor: pointer; }
+.nx-voice-icon-control:hover { color: #d7f5ff; border-color: rgba(84,199,218,.45); }
+.nx-voice-brand { display: flex; align-items: center; gap: 10px; }
+.nx-voice-brand-mark { width: 29px; height: 29px; display: grid; place-items: center; border-radius: 50%; color: #65c8d5; background: rgba(37,126,139,.12); border: 1px solid rgba(83,194,207,.28); }
+.nx-voice-brand div { display: grid; gap: 3px; }
+.nx-voice-brand strong { color: #c9dae2; font-size: 12px; letter-spacing: .14em; }
+.nx-voice-brand span { color: #536772; font-size: 8px; letter-spacing: .18em; }
+.nx-voice-live-dot { color: #53616a; font-size: 9px; letter-spacing: .17em; }
+.nx-voice-live-dot::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 7px; border-radius: 50%; background: currentColor; }
+.nx-voice-live-dot.active { color: #5bc9b0; text-shadow: 0 0 12px rgba(91,201,176,.45); }
+
+.nx-voice-display { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 28px 20px 20px; }
+.nx-voice-user-caption { min-height: 74px; display: grid; place-items: center; align-content: center; gap: 10px; text-align: center; }
+.nx-voice-user-caption span, .nx-voice-reply-label { color: #4f6874; font-size: 9px; letter-spacing: .2em; }
+.nx-voice-user-caption strong { min-height: 28px; color: #b9d2dc; font-size: clamp(19px, 2.35vw, 32px); font-weight: 500; letter-spacing: .055em; text-shadow: 0 0 22px rgba(100,203,218,.12); }
+.is-listening .nx-voice-user-caption strong { color: #d5f4f6; }
+
+.nx-voice-orbit { position: relative; width: min(340px, 60vw); aspect-ratio: 1; border: 0; border-radius: 50%; background: transparent; cursor: pointer; isolation: isolate; }
+.nx-voice-orbit:disabled { cursor: not-allowed; opacity: .55; }
+.nx-voice-orbit-boundary { position: absolute; inset: 4%; border: 1px solid rgba(79,112,127,.18); border-radius: 50%; box-shadow: inset 0 0 70px rgba(1,4,7,.9), 0 0 55px rgba(24,77,89,.08); }
+.nx-voice-orbit-boundary.inner { inset: 24%; border-style: dashed; border-color: rgba(86,149,159,.2); animation: nxVoiceSpin 24s linear infinite reverse; }
+.nx-voice-core { position: absolute; inset: 38%; z-index: 4; display: grid; place-items: center; border-radius: 50%; color: #71919d; border: 1px solid rgba(89,140,151,.25); background: radial-gradient(circle at 40% 35%, #17262c, #070c10 68%); box-shadow: 0 0 calc(14px + 42px * var(--voice-level)) rgba(45,151,165,.24), inset 0 0 16px rgba(103,188,197,.09); transform: scale(calc(.95 + var(--voice-level) * .24)); transition: color .25s, border-color .25s; }
+.is-listening .nx-voice-core { color: #7bd7df; border-color: rgba(101,209,220,.5); }
+.is-thinking .nx-voice-core { color: #a58dc8; border-color: rgba(143,111,185,.42); animation: nxVoiceThink 1.25s ease-in-out infinite; }
+.is-speaking .nx-voice-core { color: #d08da8; border-color: rgba(190,107,142,.45); animation: nxVoiceSpeak .68s ease-in-out infinite; }
+.nx-voice-particle { --distance: calc(var(--radius) * (1 + var(--voice-level) * .28)); position: absolute; z-index: 2; left: 50%; top: 50%; width: var(--size); height: var(--size); margin: calc(var(--size) / -2); border-radius: 50%; background: #1a252b; border: 1px solid rgba(105,139,151,.14); box-shadow: 0 0 calc(2px + 9px * var(--voice-level)) rgba(56,142,154,.25); transform: rotate(var(--angle)) translateX(var(--distance)); transform-origin: 0 0; animation: nxVoiceParticle var(--duration) ease-in-out var(--delay) infinite alternate; }
+.is-listening .nx-voice-particle { background: #24383d; animation-duration: calc(var(--duration) * (1 - var(--voice-level) * .42)); }
+.is-thinking .nx-voice-particle { background: #292432; animation-name: nxVoiceParticleThink; }
+.is-speaking .nx-voice-particle { background: #35242c; animation-duration: calc(var(--duration) * .48); }
+.nx-voice-state-copy { display: grid; justify-items: center; gap: 5px; }
+.nx-voice-state-copy strong { color: #78919c; font-size: 11px; letter-spacing: .22em; }
+.nx-voice-state-copy span { color: #485962; font: 10px/1.4 system-ui, sans-serif; }
+
+.nx-voice-replies { position: relative; z-index: 2; width: min(760px, calc(100% - 40px)); max-height: 205px; overflow: auto; justify-self: center; display: grid; gap: 9px; padding: 16px 18px; border: 1px solid rgba(95,123,139,.16); border-radius: 13px; background: rgba(5,10,14,.68); }
+.nx-voice-reply { padding-left: 13px; border-left: 2px solid rgba(77,169,181,.32); }
+.nx-voice-reply p, .nx-voice-reply-empty { margin: 0; color: #aebfc7; font: 13px/1.7 system-ui, sans-serif; }
+.nx-voice-reply small { display: block; margin-top: 5px; color: #4e6874; font-size: 8px; letter-spacing: .12em; text-transform: uppercase; }
+.nx-voice-reply-empty { color: #495c65; }
+.nx-voice-thinking { display: flex; gap: 5px; }
+.nx-voice-thinking i { width: 4px; height: 4px; border-radius: 50%; background: #687b86; animation: nxVoiceDot 1s ease-in-out infinite; }
+.nx-voice-thinking i:nth-child(2) { animation-delay: .16s; }.nx-voice-thinking i:nth-child(3) { animation-delay: .32s; }
+.nx-voice-error { position: relative; z-index: 2; margin: 10px auto 0; color: #d49090; font-size: 11px; }
+.nx-voice-controls { position: relative; z-index: 2; display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; padding: 18px 20px; }
+.nx-voice-controls button { display: inline-flex; align-items: center; gap: 7px; min-height: 36px; padding: 0 13px; border-radius: 9px; border: 1px solid rgba(102,129,144,.2); color: #778c97; background: rgba(9,15,20,.76); font: 9px "Cascadia Code", Consolas, monospace; letter-spacing: .09em; cursor: pointer; }
+.nx-voice-controls button:hover:not(:disabled) { color: #d6edf2; border-color: rgba(91,174,185,.38); }
+.nx-voice-controls button.primary { color: #8ed3d7; }.nx-voice-controls button.danger { color: #c88491; }
+.nx-voice-controls button:disabled { opacity: .35; cursor: not-allowed; }.nx-voice-text-only { align-self: center; color: #7e6549; font-size: 8px; }
+
+@keyframes nxVoiceParticle { from { transform: rotate(var(--angle)) translateX(calc(var(--distance) * .82)) scale(.7); opacity: .32; } to { transform: rotate(calc(var(--angle) + 16deg)) translateX(var(--distance)) scale(calc(.85 + var(--voice-level))); opacity: calc(.42 + var(--voice-level) * .5); } }
+@keyframes nxVoiceParticleThink { from { transform: rotate(var(--angle)) translateX(calc(var(--distance) * .72)); } to { transform: rotate(calc(var(--angle) + 46deg)) translateX(var(--distance)); } }
+@keyframes nxVoiceSpin { to { transform: rotate(360deg); } }
+@keyframes nxVoiceThink { 50% { transform: scale(1.12) rotate(8deg); } }
+@keyframes nxVoiceSpeak { 50% { transform: scale(calc(1 + var(--voice-level) * .24)); } }
+@keyframes nxVoiceDot { 50% { transform: translateY(-4px); opacity: .35; } }
+
+@media (max-width: 760px) {
+  .nx-voice-room { min-height: calc(100vh - 130px); border-radius: 14px; grid-template-rows: auto minmax(350px, 1fr) auto auto; }
+  .nx-voice-brand span { display: none; }.nx-voice-room-head { padding: 13px; }.nx-voice-orbit { width: min(300px, 82vw); }
+  .nx-voice-user-caption strong { font-size: 20px; }.nx-voice-replies { width: calc(100% - 24px); }.nx-voice-controls { padding: 14px 10px; }
+}
+@media (prefers-reduced-motion: reduce) { .nx-voice-particle, .nx-voice-core, .nx-voice-orbit-boundary, .nx-voice-thinking i { animation: none !important; } }

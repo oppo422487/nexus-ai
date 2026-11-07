@@ -1,0 +1,93 @@
+/* ============================================================================
+   SYSTEM · OMEGA-3  (Cinematic motion overhaul)
+   ----------------------------------------------------------------------------
+   Structural motion, not glow: independent per-card floating, volumetric light
+   rays radiating from the AI Core, and a stronger click shockwave. GPU-only
+   (transform / translate / opacity / filter). Reduced-motion gated.
+   ========================================================================== */
+
+/* ============================================================================
+   1 · INDEPENDENT CARD FLOAT — every card bobs on its own phase.
+   Uses the `translate` longhand so it composes with the OMEGA pointer-tilt
+   (on `transform`) and the hover lift, none of which it overrides. Cards inside
+   the entrance grid get their float from animations.css; this covers the rest.
+   ========================================================================== */
+.nx-card {
+  animation: nxFloat 8s var(--nx-ease-in-out, ease-in-out) infinite;
+}
+.nx-card:nth-of-type(3n)   { animation-duration: 9.5s; animation-delay: -3s; }
+.nx-card:nth-of-type(3n+1) { animation-duration: 7s;   animation-delay: -5s; }
+.nx-card:nth-of-type(3n+2) { animation-duration: 8.4s; animation-delay: -1.5s; }
+
+/* ============================================================================
+   2 · VOLUMETRIC LIGHT RAYS — god-rays fanning out from the Core (right of
+   frame, matching the Earth's screen anchor). Two counter-rotating conic ray
+   fans, radially masked so they fade to nothing at the edges. Screen-blended,
+   low opacity — reads as light shafts through the holographic haze.
+   ========================================================================== */
+.nx-godrays {
+  position: fixed;
+  inset: -20%;
+  z-index: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0.28;
+  -webkit-mask-image: radial-gradient(60% 60% at 72% 46%, #000 0%, rgba(0,0,0,0.5) 40%, transparent 72%);
+          mask-image: radial-gradient(60% 60% at 72% 46%, #000 0%, rgba(0,0,0,0.5) 40%, transparent 72%);
+}
+.nx-godrays::before,
+.nx-godrays::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-conic-gradient(
+    from 0deg at 72% 46%,
+    rgba(46, 242, 255, 0.22) 0deg,
+    transparent 2.4deg,
+    transparent 9deg,
+    rgba(178, 77, 255, 0.14) 11deg,
+    transparent 13deg,
+    transparent 20deg
+  );
+  will-change: transform;
+  transform-origin: 72% 46%;
+}
+.nx-godrays::before { animation: nxRaysCW 90s linear infinite; }
+.nx-godrays::after  { opacity: 0.6; animation: nxRaysCCW 130s linear infinite; }
+@keyframes nxRaysCW  { to { transform: rotate(360deg); } }
+@keyframes nxRaysCCW { to { transform: rotate(-360deg); } }
+/* Rays surge and brighten while the AI is active. */
+:root[data-ai-state="thinking"] .nx-godrays { opacity: 0.42; }
+:root[data-ai-mode="command"]  .nx-godrays { opacity: 0.55; }
+
+/* ============================================================================
+   3 · CLICK SHOCKWAVE — the ripple upgraded to a dual-ring energy shock.
+   (spawned by OmegaFX; this restyles .nx-omega-ripple more dramatically)
+   ========================================================================== */
+.nx-omega-ripple {
+  border-width: 2px;
+  border-color: rgba(46, 242, 255, 0.9);
+  box-shadow:
+    0 0 18px rgba(46, 242, 255, 0.7),
+    inset 0 0 12px rgba(178, 77, 255, 0.5);
+}
+.nx-omega-ripple::before {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1px solid rgba(178, 77, 255, 0.6);
+  animation: nxShockInner 620ms var(--nx-ease-out, ease-out) forwards;
+}
+@keyframes nxShockInner {
+  0%   { transform: scale(0.2); opacity: 0.8; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nx-card { animation: none !important; }
+  .nx-godrays::before,
+  .nx-godrays::after { animation: none !important; }
+  .nx-godrays { display: none; }
+  .nx-omega-ripple::before { display: none; }
+}

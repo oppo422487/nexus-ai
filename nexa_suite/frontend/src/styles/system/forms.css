@@ -1,0 +1,33 @@
+/* ---------------------------------------------------------------------------
+   3. INPUT SYSTEM — recessed frosted wells
+   ------------------------------------------------------------------------- */
+.nx-input,
+.nx-select,
+.nx-cmd-bar,
+.command-lab-textarea,
+.onboarding-input,
+.command-history-search-input,
+.simulated-transcript-input,
+.fake-input,
+.dashboard-chat-input,
+.chat-input,
+.reminder-form-grid input,
+.reminder-form-grid textarea {
+  border: 1px solid var(--nx-border-strong);
+  background: var(--nx-glass-inset);
+  box-shadow: var(--nx-elev-inset);
+  transition: border-color var(--nx-dur-base) var(--nx-ease), box-shadow var(--nx-dur-base) var(--nx-ease);
+}
+.nx-input:focus,
+.nx-select:focus,
+.command-lab-textarea:focus,
+.onboarding-input:focus,
+.command-history-search-input:focus,
+.simulated-transcript-input:focus,
+.nx-cmd-bar:focus-within,
+.dashboard-chat-input:focus-within,
+.chat-input:focus-within {
+  border-color: var(--nx-border-accent);
+  box-shadow: var(--nx-elev-inset), var(--nx-glow-cyan);
+}
+

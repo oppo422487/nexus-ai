@@ -1,0 +1,264 @@
+/* ============================================================================
+   SYSTEM · INTERACTION  (Phase C)
+   Styling for the interaction engine (nxi-*) plus subtle, hover-scoped polish
+   on existing surfaces. Token-driven; motion is cheap (transform/opacity) and
+   respects reduced motion via the guards baked into the components.
+   ========================================================================== */
+
+/* Portal root never blocks interaction; children opt back in as needed. */
+.nxi-root { position: absolute; }
+
+/* ---- Magnetic cursor ------------------------------------------------- */
+.nxi-cursor-ring,
+.nxi-cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  translate: -50% -50%;
+  border-radius: var(--nx-radius-pill);
+  pointer-events: none;
+  z-index: 2147483000;
+  will-change: transform;
+}
+.nxi-cursor-ring {
+  border: 1.5px solid rgba(120, 200, 255, 0.7);
+  box-shadow: 0 0 14px rgba(34, 211, 238, 0.35), inset 0 0 8px rgba(34, 211, 238, 0.2);
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.08), transparent 70%);
+}
+.nxi-cursor-ring[data-hovering] {
+  border-color: rgba(150, 220, 255, 0.9);
+  background: radial-gradient(circle, rgba(56, 132, 255, 0.16), transparent 72%);
+}
+.nxi-cursor-dot { background: var(--nx-cyan); box-shadow: 0 0 10px rgba(34, 211, 238, 0.9); }
+
+/* ---- Pointer reflection (ambient light following the cursor) ---------- */
+.nxi-reflection {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 900;
+  pointer-events: none;
+  border-radius: 50%;
+  will-change: transform;
+  mix-blend-mode: screen;
+  background: radial-gradient(
+    circle,
+    rgba(56, 132, 255, var(--nxi-refl-opacity, 0.12)),
+    rgba(34, 211, 238, calc(var(--nxi-refl-opacity, 0.12) * 0.6)) 34%,
+    transparent 68%
+  );
+  filter: blur(8px);
+}
+
+/* ---- Toasts / notifications ------------------------------------------ */
+.nxi-toasts {
+  position: fixed;
+  right: var(--nx-space-6);
+  top: var(--nx-space-6);
+  z-index: var(--nx-z-overlay);
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-3);
+  width: min(360px, calc(100vw - 2 * var(--nx-space-6)));
+  pointer-events: none;
+}
+.nxi-toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--nx-space-3);
+  padding: var(--nx-space-3) var(--nx-space-4);
+  border: 1px solid var(--nx-border-strong);
+  border-radius: var(--nx-radius-md);
+  background: var(--nx-glass-2);
+  box-shadow: var(--nx-elev-3);
+  backdrop-filter: blur(var(--nx-glass-blur)) saturate(140%);
+}
+.nxi-toast-icon { display: inline-flex; margin-top: 1px; color: var(--nx-info); }
+.nxi-toast.success .nxi-toast-icon { color: var(--nx-success); }
+.nxi-toast.warning .nxi-toast-icon { color: var(--nx-warning); }
+.nxi-toast.error .nxi-toast-icon { color: var(--nx-danger); }
+.nxi-toast.success { border-color: rgba(52, 211, 153, 0.4); }
+.nxi-toast.warning { border-color: rgba(251, 191, 36, 0.4); }
+.nxi-toast.error { border-color: rgba(248, 113, 113, 0.4); }
+.nxi-toast-body { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+.nxi-toast-body strong { font-size: var(--nx-fs-sm); font-weight: var(--nx-fw-semibold); color: var(--nx-text); }
+.nxi-toast-body span { font-size: var(--nx-fs-xs); color: var(--nx-text-dim); }
+.nxi-toast-close {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 20px; height: 20px; flex-shrink: 0;
+  border: none; background: transparent; color: var(--nx-text-mute);
+  border-radius: var(--nx-radius-xs); cursor: pointer;
+  transition: color var(--nx-dur-fast) var(--nx-ease), background var(--nx-dur-fast) var(--nx-ease);
+}
+.nxi-toast-close:hover { color: var(--nx-text); background: rgba(255, 255, 255, 0.06); }
+
+/* ---- Thinking pill + inline indicator -------------------------------- */
+.nxi-thinking-pill {
+  position: fixed;
+  top: var(--nx-space-5);
+  left: 50%;
+  translate: -50% 0;
+  z-index: var(--nx-z-overlay);
+  padding: var(--nx-space-2) var(--nx-space-4);
+  border: 1px solid var(--nx-border-strong);
+  border-radius: var(--nx-radius-pill);
+  background: var(--nx-glass-2);
+  box-shadow: var(--nx-elev-3), var(--nx-glow-cyan);
+  backdrop-filter: blur(var(--nx-glass-blur)) saturate(140%);
+}
+.nxi-thinking { display: inline-flex; align-items: center; gap: var(--nx-space-2); }
+.nxi-thinking-dots { display: inline-flex; gap: 4px; }
+.nxi-thinking-dots i {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--nx-cyan); box-shadow: 0 0 8px rgba(34, 211, 238, 0.7);
+  display: inline-block;
+}
+.nxi-thinking-label { font-size: var(--nx-fs-sm); font-weight: var(--nx-fw-medium); color: var(--nx-text-dim); }
+
+/* ---- Command execution chip ------------------------------------------ */
+.nxi-command {
+  position: fixed;
+  bottom: var(--nx-space-7);
+  left: 50%;
+  translate: -50% 0;
+  z-index: var(--nx-z-overlay);
+  display: inline-flex; align-items: center; gap: var(--nx-space-3);
+  padding: var(--nx-space-3) var(--nx-space-5);
+  border: 1px solid var(--nx-border-strong);
+  border-radius: var(--nx-radius-pill);
+  background: var(--nx-glass-2);
+  box-shadow: var(--nx-elev-3);
+  backdrop-filter: blur(var(--nx-glass-blur)) saturate(140%);
+}
+.nxi-command-icon { display: inline-flex; color: var(--nx-cyan); }
+.nxi-command.success .nxi-command-icon { color: var(--nx-success); }
+.nxi-command.error .nxi-command-icon { color: var(--nx-danger); }
+.nxi-command.success { border-color: rgba(52, 211, 153, 0.4); }
+.nxi-command.error { border-color: rgba(248, 113, 113, 0.4); }
+.nxi-command-label { font-size: var(--nx-fs-sm); font-weight: var(--nx-fw-medium); color: var(--nx-text); }
+
+/* ---- Voice orb ------------------------------------------------------- */
+.nxi-orb { position: relative; display: inline-grid; place-items: center; }
+.nxi-orb-ring {
+  position: absolute; inset: 0; margin: auto;
+  width: 100%; height: 100%; border-radius: 50%;
+  border: 1.5px solid rgba(56, 132, 255, 0.5);
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.12), transparent 70%);
+}
+.nxi-orb-core {
+  width: 44%; height: 44%; border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 28%, rgba(255, 255, 255, 0.9), transparent 46%),
+    var(--nx-grad-accent);
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.6), 0 0 24px rgba(34, 211, 238, 0.6);
+}
+.nxi-orb-core[data-processing] { box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.6), 0 0 30px rgba(168, 85, 247, 0.7); }
+
+/* ---- Energy border --------------------------------------------------- */
+.nxi-energy-border { position: relative; padding: 1px; border-radius: var(--nx-radius-lg); }
+.nxi-energy-border::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px;
+  background: conic-gradient(from var(--nxi-energy-angle, 0deg),
+    transparent 0deg, var(--nx-cyan) 60deg, var(--nx-violet) 120deg, transparent 200deg, transparent 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  opacity: 0; transition: opacity var(--nx-dur-base) var(--nx-ease);
+}
+.nxi-energy-border:hover::before,
+.nxi-energy-border.is-active::before { opacity: 0.9; }
+.nxi-energy-border.is-active::before { animation: nxiEnergySpin var(--nxi-energy-dur, 6s) linear infinite; }
+.nxi-energy-border-inner { position: relative; border-radius: inherit; height: 100%; }
+@property --nxi-energy-angle { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+@keyframes nxiEnergySpin { to { --nxi-energy-angle: 360deg; } }
+
+/* ---- Energy lines (SVG overlay) -------------------------------------- */
+.nxi-energy-lines {
+  position: fixed; inset: 0; width: 100vw; height: 100vh;
+  pointer-events: none; z-index: 0; overflow: visible;
+}
+.nxi-energy-line-flow { animation: nxiDashFlow 1.2s linear infinite; }
+@keyframes nxiDashFlow { to { stroke-dashoffset: -12; } }
+
+/* ---- Premium button add-ons ------------------------------------------ */
+.nxi-btn { position: relative; overflow: hidden; }
+.nxi-btn-content { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: var(--nx-space-2); }
+.nxi-btn-sheen {
+  position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.18) 50%, transparent 70%);
+  transform: translateX(-130%);
+  transition: transform var(--nx-dur-slow) var(--nx-ease);
+}
+.nxi-btn:hover .nxi-btn-sheen { transform: translateX(130%); }
+
+/* ---- Liquid glass ---------------------------------------------------- */
+.nxi-liquid { position: relative; }
+.nxi-liquid-sheen {
+  position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  opacity: 0; transition: opacity var(--nx-dur-base) var(--nx-ease);
+  background: radial-gradient(220px circle at var(--nxi-lx, 50%) var(--nxi-ly, 0%),
+    rgba(255, 255, 255, 0.12), transparent 60%);
+  z-index: 1;
+}
+.nxi-liquid:hover .nxi-liquid-sheen { opacity: 1; }
+
+/* ---- Live widget ----------------------------------------------------- */
+.nxi-live { border-radius: inherit; }
+
+/* ---- Subtle global hover polish (hover-scoped = cheap) --------------- */
+.nx-btn, .nxos-nav-item, .nx-icon-btn { position: relative; }
+.nx-card { transition: border-color var(--nx-dur-base) var(--nx-ease), box-shadow var(--nx-dur-base) var(--nx-ease); }
+
+@media (prefers-reduced-motion: reduce) {
+  .nxi-energy-border.is-active::before,
+  .nxi-energy-line-flow { animation: none; }
+  .nxi-btn-sheen { transition: none; }
+}
+
+/* ---- Floating AI assistant (permanent VoiceOrb presence) ------------- */
+.nxi-assistant {
+  position: fixed;
+  right: var(--nx-space-6);
+  bottom: var(--nx-space-6);
+  z-index: var(--nx-z-overlay);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--nx-space-2);
+  pointer-events: none;
+}
+.nxi-assistant-label {
+  font-size: var(--nx-fs-2xs);
+  font-weight: var(--nx-fw-semibold);
+  letter-spacing: var(--nx-tracking-wide);
+  text-transform: uppercase;
+  color: var(--nx-text-mute);
+  padding: 2px 10px;
+  border-radius: var(--nx-radius-pill);
+  border: 1px solid var(--nx-border);
+  background: var(--nx-glass-2);
+  box-shadow: var(--nx-elev-1);
+  backdrop-filter: blur(var(--nx-blur-sm));
+}
+.nxi-assistant[data-state="processing"] .nxi-assistant-label { color: var(--nx-cyan); border-color: var(--nx-border-accent); }
+.nxi-assistant[data-state="listening"] .nxi-assistant-label { color: var(--nx-violet); }
+
+/* ---- Universal premium button sheen (hover-scoped; pill + send only) --- */
+.nx-btn, .nx-cmd-send { position: relative; overflow: hidden; }
+.nx-btn::after, .nx-cmd-send::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 32%, rgba(255, 255, 255, 0.16) 50%, transparent 68%);
+  transform: translateX(-135%);
+  transition: transform var(--nx-dur-slow) var(--nx-ease);
+  z-index: 1;
+}
+.nx-btn:hover:not(:disabled)::after,
+.nx-cmd-send:hover:not(:disabled)::after { transform: translateX(135%); }
+
+@media (prefers-reduced-motion: reduce) {
+  .nx-btn::after, .nx-cmd-send::after { transition: none; display: none; }
+}

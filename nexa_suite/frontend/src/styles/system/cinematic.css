@@ -1,0 +1,147 @@
+/* ============================================================================
+   SYSTEM · CINEMATIC  (OMEGA-X)
+   Dramatic, visibly-obvious sci-fi motion on the existing UI: rotating energy
+   borders, flowing gradients, pointer tilt/parallax, radar sweeps, and orbiting
+   rings. GPU-first (transforms / @property angles / gradient positions). Fully
+   disabled under reduced motion. No layout or structure changes.
+   ========================================================================== */
+
+@property --nx-btn-angle { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+@property --nx-hero-angle { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+
+/* ---- Rotating energy border on every primary button ----------------- */
+.nx-btn::before,
+.nx-cmd-send::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.6px;
+  pointer-events: none;
+  background: conic-gradient(
+    from var(--nx-btn-angle),
+    transparent 0deg,
+    var(--nx-cyan) 60deg,
+    var(--nx-violet) 130deg,
+    var(--nx-magenta) 180deg,
+    transparent 240deg,
+    transparent 360deg
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  opacity: 0.85;
+  animation: nxBtnSpin 4.5s linear infinite;
+}
+@keyframes nxBtnSpin { to { --nx-btn-angle: 360deg; } }
+.nx-btn:hover::before,
+.nx-cmd-send:hover::before { opacity: 1; animation-duration: 2s; }
+
+/* ---- Flowing gradient text on hero titles + brand ------------------- */
+.dash-hero-title,
+.nxos-hero-title span,
+.nxos-brand-text h1 span {
+  background: var(--nx-grad-text);
+  background-size: 260% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: nxGradFlow 7s linear infinite;
+}
+@keyframes nxGradFlow { to { background-position: 260% 0; } }
+
+/* ---- Hero: rotating energy frame + pointer tilt --------------------- */
+.dash-hero,
+.nxos-hero {
+  transform:
+    perspective(1400px)
+    rotateX(calc(var(--nx-my, 0) * -3.4deg))
+    rotateY(calc(var(--nx-mx, 0) * 3.4deg));
+  transform-style: preserve-3d;
+  transition: transform 260ms var(--nx-ease-out);
+}
+.dash-hero::before,
+.nxos-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: conic-gradient(
+    from var(--nx-hero-angle),
+    transparent 0deg,
+    rgba(34, 211, 238, 0.7) 60deg,
+    rgba(168, 85, 247, 0.5) 140deg,
+    transparent 230deg,
+    transparent 360deg
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  opacity: 0.6;
+  animation: nxHeroSpin 9s linear infinite;
+}
+@keyframes nxHeroSpin { to { --nx-hero-angle: 360deg; } }
+:root[data-ai-mode="thinking"] .dash-hero::before,
+:root[data-ai-mode="command"] .dash-hero::before { opacity: 0.95; animation-duration: 3.5s; }
+
+/* Dashboard hero core — a rotating radar sweep behind the AI orb. */
+.dash-hero-core {
+  position: relative;
+}
+.dash-hero-core::after {
+  content: "";
+  position: absolute;
+  inset: -14px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(34, 211, 238, 0.28) 30deg, transparent 60deg);
+  animation: nxRadar 3.6s linear infinite;
+  z-index: -1;
+}
+@keyframes nxRadar { to { transform: rotate(360deg); } }
+
+/* ---- Voice orb: dramatic orbiting rings + core breathing ------------ */
+.nxi-orb { position: relative; }
+.nxi-orb::before,
+.nxi-orb::after {
+  content: "";
+  position: absolute;
+  inset: -8%;
+  border-radius: 50%;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-top-color: rgba(56, 189, 248, 0.85);
+  border-right-color: rgba(168, 85, 247, 0.6);
+  pointer-events: none;
+}
+.nxi-orb::before { animation: nxSpinCW 6s linear infinite; }
+.nxi-orb::after { inset: -20%; animation: nxSpinCCW 9s linear infinite; opacity: 0.6; }
+@keyframes nxSpinCW { to { transform: rotate(360deg); } }
+@keyframes nxSpinCCW { to { transform: rotate(-360deg); } }
+:root[data-ai-mode="voice"] .nxi-orb::before,
+:root[data-ai-mode="thinking"] .nxi-orb::before { animation-duration: 2.4s; }
+
+/* ---- Cards: pointer parallax on their inner glow + subtle depth ----- */
+.nx-card { transition: box-shadow var(--nx-dur-base) var(--nx-ease), transform var(--nx-dur-base) var(--nx-ease); }
+
+/* ---- Sidebar: brand orb spins; nav parallax with cursor ------------- */
+.nx-brand-orb { animation: nxSpinCW 14s linear infinite; }
+.nxos-nav { transform: translateX(calc(var(--nx-mx, 0) * 3px)); transition: transform 300ms var(--nx-ease-out); }
+
+@media (prefers-reduced-motion: reduce) {
+  .nx-btn::before,
+  .nx-cmd-send::before,
+  .dash-hero-title,
+  .nxos-hero-title span,
+  .nxos-brand-text h1 span,
+  .dash-hero::before,
+  .nxos-hero::before,
+  .dash-hero-core::after,
+  .nxi-orb::before,
+  .nxi-orb::after,
+  .nx-brand-orb { animation: none !important; }
+  .dash-hero,
+  .nxos-hero,
+  .nxos-nav { transform: none !important; }
+}

@@ -1,0 +1,48 @@
+/* ============================================================================
+   SYSTEM · AI GLOBE BACKGROUND
+   The fixed, non-interactive WebGL layer + the (reversible) glass adaptation
+   that lets the globe show through the UI. All rules that touch the app chrome
+   are gated on :root[data-ai-globe="on"], so with the background OFF the fast,
+   opaque UI is exactly as before.
+   ========================================================================== */
+
+.nx-globe-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;      /* never blocks UI interaction */
+  overflow: hidden;
+  background: #050816;        /* space backdrop before the globe paints */
+  contain: strict;           /* isolate layout/paint for perf */
+}
+.nx-globe-bg-inner {
+  position: absolute;
+  inset: 0;
+  will-change: transform;    /* GPU parallax */
+  transform: scale(1.06);    /* hide edges revealed by parallax translate */
+}
+
+/* ---- Glass adaptation (only while the background is enabled) --------- */
+:root[data-ai-globe="on"] .nx-shell {
+  position: relative;
+  z-index: 1;                /* UI above the fixed globe layer */
+  background: transparent;   /* let the globe fill the negative space */
+}
+:root[data-ai-globe="on"] .nxos-topbar,
+:root[data-ai-globe="on"] .nx-sidebar,
+:root[data-ai-globe="on"] .nxos-rail {
+  background: rgba(17, 24, 39, 0.72);
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+}
+/* Cards stay legible: slightly translucent glass over the globe. */
+:root[data-ai-globe="on"] .nx-card {
+  background: rgba(19, 28, 46, 0.82);
+  -webkit-backdrop-filter: blur(8px);
+          backdrop-filter: blur(8px);
+}
+:root[data-ai-globe="on"] .nx-footer {
+  background: rgba(17, 24, 39, 0.6);
+  -webkit-backdrop-filter: blur(8px);
+          backdrop-filter: blur(8px);
+}

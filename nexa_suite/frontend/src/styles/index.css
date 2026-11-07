@@ -1,0 +1,47 @@
+/* ============================================================================
+   NEXA AI — STYLE ENTRY  (Phase A modular architecture)
+   ----------------------------------------------------------------------------
+   Import order defines the cascade. Do not reorder without checking overrides.
+
+     1. tokens          — design tokens (single source of truth)
+     2. legacy/*        — the original monolith, sliced into order-preserving
+                          chunks. Superseded visually by the system layer; kept
+                          for layout/structure and slated for Phase-B migration.
+     3. system/*        — the concern-based design system. Loads last so its
+                          token-driven rules win. Section order mirrors the
+                          original design-system.css to preserve every override.
+   ========================================================================== */
+
+@import "./tokens.css";
+
+/* ---- Legacy base (migration target) --------------------------------- */
+@import "./legacy/pages.css";
+@import "./legacy/shell.css";
+
+/* ---- Design system (concern-based modules) -------------------------- */
+@import "./system/base.css";
+@import "./system/layout.css";
+@import "./system/cards.css";
+@import "./system/dashboard.css";
+@import "./system/page-hero.css";
+@import "./system/chat.css";
+@import "./system/buttons.css";
+@import "./system/forms.css";
+@import "./system/utilities.css";
+@import "./system/animations.css";
+@import "./system/primitives.css";
+@import "./system/sidebar.css";
+@import "./system/topbar.css";
+@import "./system/interaction.css";
+@import "./system/ai-models.css";
+@import "./system/voice-chat.css";
+@import "./system/email.css";
+
+/* ---- Minimal / performance redesign (loads LAST — wins the cascade) ---
+   The heavy cinematic layers (environment, alive, cinematic, hud, omega*,
+   the 3D scene) were removed for instant rendering + low GPU/memory. This
+   layer delivers the clean, professional ChatGPT/Linear-style surface. */
+@import "./system/refresh.css";
+
+/* ---- Optional premium globe background (opt-in, gated at runtime) ----- */
+@import "./system/background.css";

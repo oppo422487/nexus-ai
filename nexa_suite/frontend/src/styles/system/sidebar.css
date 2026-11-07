@@ -1,0 +1,130 @@
+/* ============================================================================
+   7. SHELL — AI-OS rail (sidebar) + command bar (topbar)
+   ========================================================================== */
+
+/* ---- Rail / sidebar -------------------------------------------------- */
+.nxos-rail {
+  gap: var(--nx-space-2);
+  padding: var(--nx-space-5) var(--nx-space-3) var(--nx-space-4);
+  border-right: 1px solid var(--nx-border);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0) 20%),
+    var(--nx-grad-rail);
+  backdrop-filter: blur(var(--nx-glass-blur-strong)) saturate(140%);
+  box-shadow: inset -1px 0 0 rgba(255,255,255,0.04), 18px 0 50px -30px rgba(0,0,0,0.9);
+}
+
+.nxos-brand { gap: var(--nx-space-3); padding: var(--nx-space-2) var(--nx-space-2) var(--nx-space-4); }
+.nxos-brand .nx-brand-orb {
+  background:
+    radial-gradient(circle at 32% 26%, rgba(255,255,255,0.6), transparent 44%),
+    conic-gradient(from 180deg, var(--nx-indigo), var(--nx-violet), var(--nx-cyan), var(--nx-indigo));
+  box-shadow:
+    inset 0 1px 2px rgba(255,255,255,0.6),
+    inset 0 -3px 8px rgba(0,0,0,0.45),
+    0 0 24px rgba(124,58,237,0.5);
+}
+.nxos-brand-text h1 { margin: 0; font-size: var(--nx-fs-xl); font-weight: var(--nx-fw-bold); letter-spacing: var(--nx-tracking-tight); line-height: 1; }
+.nxos-brand-text h1 span {
+  background: var(--nx-grad-text);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.nxos-brand-tag {
+  margin: 4px 0 0;
+  font-size: var(--nx-fs-2xs);
+  font-weight: var(--nx-fw-semibold);
+  letter-spacing: var(--nx-tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--nx-text-mute);
+}
+
+.nxos-nav { gap: var(--nx-space-4); flex: 1; overflow-y: auto; padding-right: 2px; }
+.nxos-nav-group { display: flex; flex-direction: column; gap: var(--nx-space-1); }
+.nxos-nav-label {
+  margin: 0 0 var(--nx-space-1);
+  padding: 0 var(--nx-space-3);
+  font-size: var(--nx-fs-2xs);
+  font-weight: var(--nx-fw-bold);
+  letter-spacing: var(--nx-tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--nx-text-faint);
+}
+
+.nxos-nav-item {
+  display: flex; align-items: center; gap: var(--nx-space-3);
+  width: 100%;
+  padding: var(--nx-space-2) var(--nx-space-3);
+  border: 1px solid transparent;
+  border-radius: var(--nx-radius-sm);
+  background: transparent;
+  color: var(--nx-text-dim);
+  cursor: pointer;
+  text-align: left;
+  position: relative;
+  transition: background var(--nx-dur-base) var(--nx-ease),
+              color var(--nx-dur-base) var(--nx-ease),
+              border-color var(--nx-dur-base) var(--nx-ease),
+              transform var(--nx-dur-fast) var(--nx-ease);
+}
+.nxos-nav-icon {
+  display: grid; place-items: center;
+  width: 32px; height: 32px; flex-shrink: 0;
+  border-radius: var(--nx-radius-xs);
+  border: 1px solid var(--nx-border);
+  background: var(--nx-glass-1);
+  color: var(--nx-text-dim);
+  transition: color var(--nx-dur-base) var(--nx-ease), border-color var(--nx-dur-base) var(--nx-ease), box-shadow var(--nx-dur-base) var(--nx-ease);
+}
+.nxos-nav-icon svg { width: 16px; height: 16px; }
+.nxos-nav-text { display: flex; flex-direction: column; line-height: 1.1; min-width: 0; }
+.nxos-nav-name { font-size: var(--nx-fs-md); font-weight: var(--nx-fw-medium); color: inherit; }
+.nxos-nav-hint { font-size: var(--nx-fs-2xs); color: var(--nx-text-faint); margin-top: 2px; }
+
+.nxos-nav-item:hover {
+  color: var(--nx-text);
+  background: linear-gradient(90deg, rgba(99,102,241,0.12), rgba(34,211,238,0.03));
+  transform: translateX(2px);
+}
+.nxos-nav-item:hover .nxos-nav-icon { color: var(--nx-cyan); border-color: var(--nx-border-accent); }
+
+.nxos-nav-item.active {
+  color: #fff;
+  border-color: var(--nx-border-strong);
+  background: linear-gradient(90deg, rgba(99,102,241,0.30), rgba(59,130,246,0.08));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), var(--nx-glow-accent);
+}
+.nxos-nav-item.active .nxos-nav-icon {
+  color: var(--nx-text-on-accent);
+  border-color: transparent;
+  background:
+    radial-gradient(circle at 32% 26%, rgba(255,255,255,0.4), transparent 46%),
+    var(--nx-grad-accent);
+  box-shadow: inset 0 1px 1px rgba(255,255,255,0.5), 0 4px 12px -4px rgba(56,132,255,0.7);
+}
+.nxos-nav-item.active .nxos-nav-hint { color: rgba(233,240,255,0.6); }
+.nxos-nav-item.active::before {
+  content: ""; position: absolute; left: -4px; top: 50%;
+  height: 44%; width: 3px; transform: translateY(-50%);
+  border-radius: var(--nx-radius-pill);
+  background: var(--nx-grad-accent);
+  box-shadow: var(--nx-glow-cyan);
+}
+
+/* Rail status */
+.nxos-rail-status { display: flex; flex-direction: column; gap: var(--nx-space-2); margin-top: var(--nx-space-2); }
+.nxos-status-card {
+  display: flex; align-items: center; gap: var(--nx-space-3);
+  padding: var(--nx-space-3);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-sm);
+  background: var(--nx-glass-1);
+  box-shadow: var(--nx-elev-2);
+}
+.nxos-status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.nxos-status-dot.ok { background: var(--nx-success); box-shadow: 0 0 10px rgba(52,211,153,0.8); }
+.nxos-status-dot.warn { background: var(--nx-warning); box-shadow: 0 0 10px rgba(251,191,36,0.8); }
+.nxos-status-text { display: flex; flex-direction: column; min-width: 0; }
+.nxos-status-text strong { font-size: var(--nx-fs-sm); font-weight: var(--nx-fw-semibold); }
+.nxos-status-text strong.ok { color: var(--nx-success); }
+.nxos-status-text strong.warn { color: var(--nx-warning); }
+.nxos-status-text span { font-size: var(--nx-fs-2xs); color: var(--nx-text-mute); }

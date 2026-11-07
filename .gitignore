@@ -1,0 +1,78 @@
+# â”€â”€ MARK LVI â€” what never belongs in the repository â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# Everything listed here is created by the app on first run. A fresh clone with
+# none of it present boots straight to the setup screen, which is the intended
+# first experience â€” so nothing here needs to be committed, and some of it must
+# never be.
+
+# â”€â”€ Secrets. Committing any of these publishes them. â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+config/api_keys.json          # your Gemini API key, plus per-plugin credentials
+config/certs/                 # the dashboard's TLS private key and certificate
+config/whatsapp_web/          # a LINKED WhatsApp session â€” committing it hands
+                              # somebody your WhatsApp account, not just a key
+**/token*.json                # Google OAuth tokens (Gmail / Calendar plugins)
+**/client_secret*.json        # Google OAuth client secrets
+*credentials*.json
+.env
+.env.*
+
+# â”€â”€ Personal data the assistant accumulates about you â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+memory/long_term.json
+memory/*.db
+
+# â”€â”€ Python build noise â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# â”€â”€ Virtual environments â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+.venv/
+venv/
+env/
+ENV/
+
+# â”€â”€ Editors and operating systems â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# â”€â”€ Runtime output â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+*.log
+logs/
+downloads/
+screenshots/
+
+# Nexa extension private runtime and dependencies
+nexa_suite/runtime/
+node_modules/
+*.sqlite3
+!**/.env.example
+
+# Literal patterns (inline comments are not valid ignore-pattern comments).
+config/api_keys.json
+config/certs/
+nexa_suite/backend/.env
+config/whatsapp_web/
+
+config/gmail_client.json
+config/gmail_token.json
+
+state/
+config/calendar_token.json
+config/spotify_token.json
+config/life_connectors.json
+memory/life_data/
+# Private UI previews, launch diagnostics and SQLite sidecar files.
+/runtime/
+*.sqlite3-*
+*.db-*
+
+config/whatsapp_calls.json
+/plugin_review/

@@ -1,0 +1,369 @@
+/* ============================================================================
+   SYSTEM · HUD  (Go-full-cinematic overlay)
+   The always-on holographic frame: corner brackets, scan line, ambient
+   waveform, radar sweep, drifting glyphs, abstract telemetry. Purely
+   decorative — pointer-events:none over the whole thing so clicks pass
+   straight through to the UI. GPU-only (transform/opacity). Reduced-motion
+   freezes all animation but keeps the static frame.
+   ========================================================================== */
+
+.nx-hud {
+  position: fixed;
+  inset: 0;
+  z-index: 40;                 /* above content, below modals/overlays */
+  pointer-events: none;
+  overflow: hidden;
+  mix-blend-mode: screen;
+  opacity: 0.9;
+}
+
+/* ---- Cursor-reactive spotlight -------------------------------------- */
+/* Follows the real pointer via the --nx-pointer-x/y vars the interaction
+   layer publishes. Screen-blended so it reads as ambient light, not a shape. */
+.nx-hud-spotlight {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    380px 380px at var(--nx-pointer-x, 50%) var(--nx-pointer-y, 40%),
+    rgba(46, 242, 255, 0.10),
+    rgba(178, 77, 255, 0.05) 40%,
+    transparent 68%
+  );
+  transition: background-position 120ms linear;
+  opacity: calc(0.6 + var(--nx-core-energy, 0) * 0.4);
+}
+
+/* ---- Holographic scanlines ------------------------------------------ */
+.nx-hud-scanlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(140, 220, 255, 0.05) 0px,
+    rgba(140, 220, 255, 0.05) 1px,
+    transparent 2px,
+    transparent 4px
+  );
+  opacity: 0.35;
+  animation: nxHudScanlines 8s linear infinite;
+}
+@keyframes nxHudScanlines {
+  from { background-position: 0 0; }
+  to   { background-position: 0 8px; }
+}
+
+/* ---- Fullscreen AI energy flash ------------------------------------- */
+/* Idle: invisible. When the AI enters a mode, a radial pulse blooms from the
+   Core side of the frame. Purely reactive to the real [data-ai-mode] attr. */
+.nx-hud-flash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(120% 120% at 78% 42%,
+    rgba(46, 242, 255, 0.14), transparent 55%);
+}
+:root[data-ai-mode="thinking"] .nx-hud-flash {
+  animation: nxHudFlash 2.6s var(--nx-ease-in-out, ease-in-out) infinite;
+}
+:root[data-ai-mode="command"] .nx-hud-flash {
+  background: radial-gradient(130% 130% at 78% 42%,
+    rgba(255, 154, 61, 0.18), rgba(255, 61, 240, 0.08) 40%, transparent 60%);
+  animation: nxHudFlash 1.3s var(--nx-ease-out, ease-out) infinite;
+}
+:root[data-ai-mode="voice"] .nx-hud-flash {
+  background: radial-gradient(130% 130% at 78% 42%,
+    rgba(59, 123, 255, 0.16), transparent 58%);
+  animation: nxHudFlash 2s var(--nx-ease-in-out, ease-in-out) infinite;
+}
+@keyframes nxHudFlash {
+  0%, 100% { opacity: 0; }
+  50%      { opacity: 1; }
+}
+
+/* ---- Corner brackets ------------------------------------------------- */
+.nx-hud-corner {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  border: 1.5px solid var(--nx-border-accent);
+  opacity: calc(0.5 + var(--nx-core-pulse, 0.5) * 0.35);
+  filter: drop-shadow(0 0 6px rgba(46, 242, 255, 0.5));
+}
+.nx-hud-corner--tl { top: 14px;    left: 14px;    border-right: none; border-bottom: none; }
+.nx-hud-corner--tr { top: 14px;    right: 14px;   border-left: none;  border-bottom: none; }
+.nx-hud-corner--bl { bottom: 14px; left: 14px;    border-right: none; border-top: none; }
+.nx-hud-corner--br { bottom: 14px; right: 14px;   border-left: none;  border-top: none; }
+
+/* ---- Full-surface scan line ------------------------------------------ */
+.nx-hud-scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  top: 0;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(46, 242, 255, 0.55) 30%,
+    rgba(178, 77, 255, 0.5) 70%,
+    transparent);
+  box-shadow: 0 0 14px rgba(46, 242, 255, 0.5);
+  opacity: 0.5;
+  animation: nxHudScan 7.5s linear infinite;
+}
+@keyframes nxHudScan {
+  0%   { transform: translateY(-10vh); opacity: 0; }
+  8%   { opacity: 0.55; }
+  92%  { opacity: 0.55; }
+  100% { transform: translateY(100vh); opacity: 0; }
+}
+
+/* ---- Ambient waveform (bottom-left) ---------------------------------- */
+.nx-hud-wave {
+  position: absolute;
+  left: 60px;
+  bottom: 22px;
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 34px;
+}
+.nx-hud-wave span {
+  width: 3px;
+  height: 30%;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--nx-cyan), var(--nx-violet));
+  box-shadow: 0 0 6px rgba(46, 242, 255, 0.5);
+  transform-origin: bottom;
+  animation: nxHudWave 1.3s var(--nx-ease-in-out, ease-in-out) infinite;
+  animation-delay: calc(var(--i) * -0.11s);
+  opacity: calc(0.55 + var(--nx-core-energy, 0) * 0.45);
+}
+@keyframes nxHudWave {
+  0%, 100% { transform: scaleY(0.35); }
+  50%      { transform: scaleY(calc(1 + var(--nx-core-energy, 0) * 1.4)); }
+}
+
+/* ---- Radar sweep (bottom-right) -------------------------------------- */
+.nx-hud-radar {
+  position: absolute;
+  right: 56px;
+  bottom: 40px;
+  width: 66px;
+  height: 66px;
+  border-radius: 50%;
+  border: 1px solid rgba(46, 242, 255, 0.28);
+  box-shadow: inset 0 0 18px rgba(46, 242, 255, 0.12);
+}
+.nx-hud-radar::before {
+  content: "";
+  position: absolute;
+  inset: 32%;
+  border-radius: 50%;
+  border: 1px solid rgba(46, 242, 255, 0.22);
+}
+.nx-hud-radar-sweep {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg,
+    rgba(46, 242, 255, 0.4) 0deg,
+    transparent 45deg,
+    transparent 360deg);
+  animation: nxHudSpin 3.4s linear infinite;
+}
+.nx-hud-radar-ping {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(46, 242, 255, 0.5);
+  animation: nxHudPing 2.6s var(--nx-ease-out, ease-out) infinite;
+}
+@keyframes nxHudSpin { to { transform: rotate(360deg); } }
+@keyframes nxHudPing {
+  0%   { transform: scale(0.2); opacity: 0.7; }
+  100% { transform: scale(1);   opacity: 0; }
+}
+
+/* ---- Drifting AI glyphs (right rail) --------------------------------- */
+.nx-hud-glyphs {
+  position: absolute;
+  right: 20px;
+  top: 12%;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  font-size: 13px;
+  color: rgba(140, 220, 255, 0.5);
+  text-shadow: 0 0 8px rgba(46, 242, 255, 0.5);
+}
+.nx-hud-glyphs span {
+  animation: nxHudGlyph 4.5s var(--nx-ease-in-out, ease-in-out) infinite;
+  animation-delay: calc(var(--i) * -0.55s);
+}
+@keyframes nxHudGlyph {
+  0%, 100% { opacity: 0.25; transform: translateY(0); }
+  50%      { opacity: 0.85; transform: translateY(-4px); }
+}
+
+/* ---- Flowing AI glyph streams (far right edge, matrix rain) ---------- */
+.nx-hud-rain {
+  position: absolute;
+  top: 0;
+  right: 4px;
+  bottom: 0;
+  display: flex;
+  gap: 14px;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent);
+          mask-image: linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent);
+  opacity: 0.5;
+}
+.nx-hud-rain-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 11px;
+  line-height: 1;
+  color: rgba(120, 235, 210, 0.75);
+  text-shadow: 0 0 8px rgba(46, 242, 255, 0.55);
+  animation: nxHudRain calc(9s + var(--c) * 3s) linear infinite;
+  animation-delay: calc(var(--c) * -2.4s);
+}
+.nx-hud-rain-col span:nth-child(3n) { color: rgba(178, 130, 255, 0.8); }
+.nx-hud-rain-col span:nth-child(4n) { color: rgba(46, 242, 255, 0.9); }
+@keyframes nxHudRain {
+  0%   { transform: translateY(-52%); }
+  100% { transform: translateY(0%); }
+}
+:root[data-ai-state="thinking"] .nx-hud-rain-col { animation-duration: calc(4s + var(--c) * 1.4s); }
+
+/* ---- Abstract telemetry cluster (top-left, under bracket) ------------ */
+.nx-hud-telemetry {
+  position: absolute;
+  top: 58px;
+  left: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 9.5px;
+  letter-spacing: 0.22em;
+  font-weight: 600;
+  color: rgba(150, 225, 255, 0.55);
+}
+.nx-hud-telemetry-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.nx-hud-telemetry-row em {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--nx-emerald);
+  box-shadow: 0 0 8px var(--nx-emerald);
+  animation: nxHudBlink 2.2s var(--nx-ease-in-out, ease-in-out) infinite;
+}
+.nx-hud-telemetry-row:nth-child(2) em { animation-delay: -0.7s; background: var(--nx-cyan); box-shadow: 0 0 8px var(--nx-cyan); }
+.nx-hud-telemetry-row:nth-child(3) em { animation-delay: -1.4s; background: var(--nx-violet); box-shadow: 0 0 8px var(--nx-violet); }
+@keyframes nxHudBlink {
+  0%, 100% { opacity: 0.3; }
+  50%      { opacity: 1; }
+}
+
+/* ---- Floating processing arc (top-right, under bracket) -------------- */
+.nx-hud-arc {
+  position: absolute;
+  top: 56px;
+  right: 30px;
+  width: 58px;
+  height: 58px;
+}
+.nx-hud-arc-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid transparent;
+  border-top-color: var(--nx-cyan);
+  border-right-color: rgba(178, 77, 255, 0.7);
+  filter: drop-shadow(0 0 6px rgba(46, 242, 255, 0.6));
+  animation: nxHudSpin 2.8s linear infinite;
+}
+.nx-hud-arc-ring--2 {
+  inset: 12px;
+  border-top-color: var(--nx-magenta);
+  border-right-color: transparent;
+  border-left-color: rgba(16, 255, 184, 0.7);
+  animation: nxHudSpinR 3.6s linear infinite;
+}
+.nx-hud-arc-dot {
+  position: absolute;
+  inset: 40%;
+  border-radius: 50%;
+  background: var(--nx-cyan);
+  box-shadow: 0 0 12px var(--nx-cyan), 0 0 22px rgba(46, 242, 255, 0.5);
+  animation: nxHudBlink 1.8s var(--nx-ease-in-out, ease-in-out) infinite;
+}
+@keyframes nxHudSpinR { to { transform: rotate(-360deg); } }
+
+/* ---- Vertical data-stream column (left rail) ------------------------- */
+.nx-hud-stream {
+  position: absolute;
+  left: 26px;
+  top: 32%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.nx-hud-stream span {
+  width: 22px;
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--nx-cyan), transparent);
+  box-shadow: 0 0 6px rgba(46, 242, 255, 0.4);
+  transform-origin: left;
+  animation: nxHudStream 2.4s var(--nx-ease-in-out, ease-in-out) infinite;
+  animation-delay: calc(var(--i) * -0.2s);
+}
+@keyframes nxHudStream {
+  0%, 100% { transform: scaleX(0.3); opacity: 0.3; }
+  50%      { transform: scaleX(1);   opacity: 0.9; }
+}
+
+/* Intensify with real AI activity (attributes set by the ActivityDriver). */
+:root[data-ai-state="thinking"] .nx-hud-arc-ring { animation-duration: 1.2s; }
+:root[data-ai-state="thinking"] .nx-hud-stream span { animation-duration: 1.1s; }
+:root[data-ai-state="thinking"] .nx-hud-scan { animation-duration: 3.4s; opacity: 0.75; }
+:root[data-ai-state="thinking"] .nx-hud-radar-sweep { animation-duration: 1.6s; }
+:root[data-ai-mode="command"] .nx-hud { opacity: 1; }
+
+/* Keep the HUD from crowding small windows. */
+@media (max-width: 900px) {
+  .nx-hud-glyphs,
+  .nx-hud-telemetry,
+  .nx-hud-stream,
+  .nx-hud-rain,
+  .nx-hud-arc { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nx-hud-scan,
+  .nx-hud-wave span,
+  .nx-hud-radar-sweep,
+  .nx-hud-radar-ping,
+  .nx-hud-glyphs span,
+  .nx-hud-telemetry-row em,
+  .nx-hud-arc-ring,
+  .nx-hud-arc-dot,
+  .nx-hud-stream span,
+  .nx-hud-rain-col,
+  .nx-hud-scanlines,
+  .nx-hud-flash {
+    animation: none !important;
+  }
+  .nx-hud-scan,
+  .nx-hud-scanlines,
+  .nx-hud-flash { display: none; }
+}

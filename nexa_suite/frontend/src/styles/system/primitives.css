@@ -1,0 +1,58 @@
+/* ============================================================================
+   SYSTEM · PRIMITIVES  — classes backing the reusable React UI primitives
+   (Surface / GlassPanel / Card). Buttons, inputs, chips etc. reuse the
+   existing system classes; these add the generic surface/card scaffolding.
+   ========================================================================== */
+
+.nxui-surface {
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-lg);
+  background: var(--nx-glass-1);
+  box-shadow: var(--nx-elev-3);
+}
+.nxui-surface--inset {
+  background: var(--nx-glass-inset);
+  box-shadow: var(--nx-elev-inset);
+}
+.nxui-surface--plain {
+  background: var(--nx-surface-1);
+  box-shadow: var(--nx-elev-2);
+}
+.nxui-surface--raised { box-shadow: var(--nx-elev-3), var(--nx-glow-accent); }
+
+.nxui-glass {
+  backdrop-filter: blur(var(--nx-glass-blur)) saturate(140%);
+  -webkit-backdrop-filter: blur(var(--nx-glass-blur)) saturate(140%);
+}
+
+.nxui-surface--interactive {
+  transition: transform var(--nx-dur-base) var(--nx-ease),
+              box-shadow var(--nx-dur-base) var(--nx-ease),
+              border-color var(--nx-dur-base) var(--nx-ease);
+}
+.nxui-surface--interactive:hover {
+  transform: translateY(-3px);
+  border-color: var(--nx-border-strong);
+  box-shadow: var(--nx-elev-3), var(--nx-glow-accent);
+}
+
+/* Padding scale utility (used by Card / Surface `padding` prop) */
+.nxui-p-none { padding: 0; }
+.nxui-p-sm { padding: var(--nx-space-3); }
+.nxui-p-md { padding: var(--nx-space-5); }
+.nxui-p-lg { padding: var(--nx-space-6); }
+
+/* Card header */
+.nxui-card-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--nx-space-3);
+  margin-bottom: var(--nx-space-4);
+}
+.nxui-card-title {
+  display: flex; align-items: center; gap: var(--nx-space-2);
+  font-size: var(--nx-fs-md);
+  font-weight: var(--nx-fw-semibold);
+  color: var(--nx-text);
+}
+.nxui-card-title svg { width: var(--nx-icon-md); height: var(--nx-icon-md); color: var(--nx-indigo); }
+.nxui-card-foot { margin-top: var(--nx-space-4); }

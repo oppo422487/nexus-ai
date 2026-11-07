@@ -1,0 +1,240 @@
+/* ============================================================================
+   SYSTEM · OMEGA  (Full OMEGA mode)
+   ----------------------------------------------------------------------------
+   The maximum-intensity surface layer. Continuous GPU-only motion on every
+   card, button, panel and rail: rotating neon energy borders, cursor-angled
+   liquid-glass reflections, scanner sweeps, mouse tilt/parallax physics, and
+   holographic ambient glow. Loads last so it wins.
+
+   Discipline that keeps 60fps and functionality intact:
+     • Only transform / opacity / @property angles / gradient positions animate.
+     • All decorative pseudo-elements are pointer-events:none (clicks pass
+       through — verified).
+     • Tilt is applied to a curated set of *content* surfaces (never modals,
+       menus, or scroll containers) at a tiny angle, so no stacking-context or
+       scroll regressions.
+     • Everything collapses under prefers-reduced-motion.
+   ========================================================================== */
+
+@property --nx-omega-angle { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+
+/* ============================================================================
+   1 · ROTATING NEON ENERGY BORDER on every card (uses the free ::before)
+   ========================================================================== */
+.nx-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.4px;
+  pointer-events: none;
+  background: conic-gradient(
+    from var(--nx-omega-angle),
+    transparent 0deg,
+    var(--nx-cyan) 44deg,
+    transparent 110deg,
+    var(--nx-magenta) 180deg,
+    transparent 240deg,
+    var(--nx-violet) 312deg,
+    transparent 360deg
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  opacity: 0.5;
+  mix-blend-mode: screen;
+  animation: nxOmegaSpin 8s linear infinite;
+}
+@keyframes nxOmegaSpin { to { --nx-omega-angle: 360deg; } }
+:root[data-ai-state="thinking"] .nx-card::before { opacity: 0.85; animation-duration: 3.4s; }
+:root[data-ai-mode="command"] .nx-card::before { opacity: 0.95; animation-duration: 2.4s; }
+
+/* ============================================================================
+   2 · CURSOR-ANGLED LIQUID-GLASS REFLECTION + SCANNER SWEEP
+   A directional sheen whose angle tracks the cursor (--nx-mx/--nx-my), plus a
+   diagonal scan band that rakes across continuously. Layered into one
+   overlay element per card so the card's own background is untouched.
+   ========================================================================== */
+.nx-card { position: relative; }
+
+/* The ::before is the neon border and ::after is the alive-layer breathing
+   glow, so the cursor-directed specular reflection extends ::after (merging a
+   background-image alongside its existing box-shadow) rather than claiming a
+   third pseudo. Cheap + safe. */
+.nx-card::after {
+  /* extend the alive-layer breathing glow with a cursor-directed specular */
+  background-image:
+    radial-gradient(
+      120px 120px at
+      calc(50% + var(--nx-mx, 0) * 90%)
+      calc(50% + var(--nx-my, 0) * 90%),
+      rgba(180, 240, 255, 0.10),
+      transparent 60%
+    );
+}
+
+/* ============================================================================
+   3 · MOUSE TILT / DEPTH PHYSICS on content surfaces
+   Shared normalized pointer vars → a tiny perspective tilt. Hover keeps the
+   tilt and adds a lift, so the two never fight. Curated selector list avoids
+   modals / dropdowns / scroll containers.
+   ========================================================================== */
+.nx-card,
+.dashboard-metric,
+.dashboard-service-card,
+.launcher-card,
+.onboarding-feature-card,
+.nx-tile {
+  transform:
+    perspective(1100px)
+    rotateX(calc(var(--nx-my, 0) * -1.5deg))
+    rotateY(calc(var(--nx-mx, 0) * 1.5deg));
+  transform-style: preserve-3d;
+}
+.nx-card:hover,
+.dashboard-metric:hover,
+.dashboard-service-card:hover,
+.launcher-card:hover,
+.onboarding-feature-card:hover,
+.nx-tile:hover {
+  transform:
+    perspective(1100px)
+    rotateX(calc(var(--nx-my, 0) * -2.4deg))
+    rotateY(calc(var(--nx-mx, 0) * 2.4deg))
+    translateY(-5px)
+    scale(1.012);
+}
+
+/* ============================================================================
+   4 · BUTTONS — continuous energy pulse + magnetic sheen
+   (rotating conic border already lives in cinematic.css; here we add a
+   flowing gradient wash + brightness heartbeat)
+   ========================================================================== */
+.nx-btn,
+.nx-cmd-send {
+  position: relative;
+  overflow: hidden;
+  background-size: 200% 100% !important;
+  animation: nxBtnWash 6s linear infinite, nxBtnBeat 3.4s var(--nx-ease-in-out, ease-in-out) infinite;
+}
+@keyframes nxBtnWash { to { background-position: 200% 0; } }
+@keyframes nxBtnBeat {
+  0%, 100% { filter: brightness(1); }
+  50%      { filter: brightness(1.14) saturate(1.12); }
+}
+.nx-btn:hover,
+.nx-cmd-send:hover { animation-duration: 3s, 1.6s; }
+
+/* ============================================================================
+   5 · SIDEBAR — a living neon energy edge + nav parallax depth
+   ========================================================================== */
+.nx-sidebar {
+  position: relative;
+  animation: nxRailGlow 5.5s var(--nx-ease-in-out, ease-in-out) infinite;
+}
+@keyframes nxRailGlow {
+  0%, 100% { box-shadow: inset -1px 0 0 rgba(46, 242, 255, 0.16), 0 0 34px -20px rgba(46, 242, 255, 0.5); }
+  50%      { box-shadow: inset -1px 0 0 rgba(178, 77, 255, 0.4),  0 0 46px -14px rgba(178, 77, 255, 0.6); }
+}
+.nx-sidebar::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -1px;
+  width: 2px;
+  height: 100%;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent, var(--nx-cyan) 30%, var(--nx-magenta) 70%, transparent);
+  opacity: 0.4;
+  background-size: 100% 260%;
+  animation: nxRailScan 6s linear infinite;
+}
+@keyframes nxRailScan { to { background-position: 0 260%; } }
+
+/* Nav items: a magnetic sheen that sweeps on hover */
+.nxos-nav-item { position: relative; overflow: hidden; }
+.nxos-nav-item::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(100deg, transparent 20%, rgba(160, 230, 255, 0.18) 50%, transparent 80%);
+  background-size: 220% 100%;
+  background-position: 150% 0;
+  transition: background-position 620ms var(--nx-ease-out, ease-out);
+}
+.nxos-nav-item:hover::after { background-position: -60% 0; }
+
+/* ============================================================================
+   6 · TOPBAR — a thin travelling scan line along its base
+   ========================================================================== */
+.nxos-topbar {
+  position: relative;
+}
+.nxos-topbar::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 1.5px;
+  width: 40%;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, var(--nx-cyan), var(--nx-violet), transparent);
+  box-shadow: 0 0 10px rgba(46, 242, 255, 0.6);
+  animation: nxTopScan 5.5s var(--nx-ease-in-out, ease-in-out) infinite;
+}
+@keyframes nxTopScan {
+  0%   { transform: translateX(-40%); opacity: 0; }
+  15%  { opacity: 0.9; }
+  85%  { opacity: 0.9; }
+  100% { transform: translateX(260%); opacity: 0; }
+}
+
+/* ============================================================================
+   7 · HERO — cursor-directed specular reflection (dynamic glass highlight)
+   ========================================================================== */
+.dash-hero { position: relative; }
+.dash-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(
+    340px 220px at
+    calc(50% + var(--nx-mx, 0) * 120%)
+    calc(30% + var(--nx-my, 0) * 120%),
+    rgba(190, 245, 255, 0.14),
+    rgba(178, 77, 255, 0.05) 40%,
+    transparent 66%
+  );
+  mix-blend-mode: screen;
+  z-index: 0;
+}
+
+/* ============================================================================
+   8 · GLOBAL SATURATION / CONTRAST LIFT for the cyber look
+   Applied only to the text/content column via a wrapper so backdrop-filters on
+   glass panels are unaffected (filter on ancestors of backdrop-filter is safe
+   here because .nx-content is not itself a backdrop-filter root).
+   ========================================================================== */
+.nx-content { }  /* reserved hook; saturation handled by brighter tokens */
+
+@media (prefers-reduced-motion: reduce) {
+  .nx-card::before,
+  .nx-btn,
+  .nx-cmd-send,
+  .nx-sidebar,
+  .nx-sidebar::after,
+  .nxos-topbar::after {
+    animation: none !important;
+  }
+  .nx-card,
+  .dashboard-metric,
+  .dashboard-service-card,
+  .launcher-card,
+  .onboarding-feature-card,
+  .nx-tile {
+    transform: none !important;
+  }
+}

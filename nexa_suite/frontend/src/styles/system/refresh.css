@@ -1,0 +1,220 @@
+/* ============================================================================
+   SYSTEM · REFRESH  (Minimal / performance redesign — loads LAST)
+   ----------------------------------------------------------------------------
+   A clean, professional, flat surface language (ChatGPT / Linear / Notion /
+   Cursor). Flattens the old cinematic surfaces, removes glow, standardises
+   cards / sidebar / topbar / buttons / inputs / chat, and keeps only fast
+   150–200ms hover + fade transitions. GPU-cheap; reduced-motion friendly.
+   ========================================================================== */
+
+/* ---- 0 · Kill leftover FX ------------------------------------------- */
+html, body { cursor: auto !important; }
+.nxi-cursor-dot, .nxi-cursor-ring { display: none !important; }
+.nxi-energy-border.is-active::before,
+.nxi-energy-line-flow { animation: none !important; }
+
+/* ---- 1 · App shell — flat slate ------------------------------------- */
+.nx-shell {
+  background: var(--nx-space-0);
+  color: var(--nx-text);
+}
+.nx-main { background: transparent; }
+.nx-footer { border-top: 1px solid var(--nx-border); color: var(--nx-text-mute); }
+
+/* thin, quiet scrollbars */
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.22) !important;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+*::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.38) !important; }
+
+/* ---- 2 · Sidebar ---------------------------------------------------- */
+.nx-sidebar, .nxos-rail {
+  background: #111827;
+  border-right: 1px solid var(--nx-border);
+  box-shadow: none;
+}
+.nxos-nav-item {
+  border-radius: var(--nx-radius-md);
+  color: var(--nx-text-dim);
+  transition: background var(--nx-dur-fast) var(--nx-ease), color var(--nx-dur-fast) var(--nx-ease);
+}
+.nxos-nav-item:hover { background: rgba(148, 163, 184, 0.08); color: var(--nx-text); }
+.nxos-nav-item:hover .nxos-nav-icon { color: var(--nx-accent); border-color: transparent; background: transparent; }
+.nxos-nav-item.active {
+  background: rgba(59, 130, 246, 0.14);
+  color: #fff;
+}
+.nxos-nav-icon {
+  background: transparent;
+  border: none;
+  color: var(--nx-text-mute);
+  transition: color var(--nx-dur-fast) var(--nx-ease);
+}
+.nxos-nav-item.active .nxos-nav-icon { color: var(--nx-accent); background: transparent; border: none; }
+/* clean left indicator bar */
+.nxos-nav-item.active::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 50%;
+  width: 3px; height: 18px;
+  transform: translateY(-50%);
+  border-radius: 0 3px 3px 0;
+  background: var(--nx-accent);
+  box-shadow: none;
+  animation: none;
+}
+.nxos-brand-text h1 span { -webkit-text-fill-color: currentColor; color: var(--nx-accent); background: none; }
+.nx-brand-orb { background: var(--nx-accent); box-shadow: none; filter: none; animation: none; }
+.nxos-status-dot.ok { box-shadow: none; }
+.nxos-status-dot.warn { box-shadow: none; }
+
+/* ---- 3 · Topbar ----------------------------------------------------- */
+.nxos-topbar {
+  background: #111827;
+  border-bottom: 1px solid var(--nx-border);
+  box-shadow: none;
+}
+.nxos-command-bar {
+  background: var(--nx-glass-inset);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-md);
+  box-shadow: none;
+  transition: border-color var(--nx-dur-fast) var(--nx-ease), box-shadow var(--nx-dur-fast) var(--nx-ease);
+}
+.nxos-command-bar:focus-within {
+  border-color: var(--nx-accent);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+}
+.nxos-ai-orb.online { box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.14); animation: none; }
+.nxos-ai-status-text .on { color: var(--nx-success); }
+.nxos-profile-text span { color: var(--nx-text-mute); }
+
+/* ---- 4 · Cards ------------------------------------------------------ */
+.nx-card,
+.panel-card, .quick-card, .page-card, .activity-card, .settings-card, .security-card,
+.preference-card, .launcher-card, .web-answer-card, .chat-shell, .dashboard-chat-card,
+.dashboard-service-card, .dashboard-system-card, .dashboard-metric, .command-input-card,
+.command-result-card, .command-analysis-card, .command-history-panel, .voice-panel,
+.voice-session-card, .real-listening-panel, .real-mic-status-card, .speech-readiness-card,
+.speech-support-panel, .system-status-panel, .mic-permission-card {
+  background: var(--nx-surface-1);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-lg);
+  box-shadow: var(--nx-elev-1);
+}
+/* remove any residual decorative pseudo glow on cards */
+.nx-card::before, .nx-card::after { display: none !important; }
+/* interactive cards: subtle, fast hover elevation */
+.dashboard-service-card, .launcher-card, .dashboard-metric, .nx-tile, .onboarding-feature-card {
+  transition: transform var(--nx-dur-fast) var(--nx-ease), box-shadow var(--nx-dur-fast) var(--nx-ease), border-color var(--nx-dur-fast) var(--nx-ease);
+}
+.dashboard-service-card:hover, .launcher-card:hover, .dashboard-metric:hover, .nx-tile:hover, .onboarding-feature-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--nx-elev-2);
+  border-color: var(--nx-border-strong);
+}
+
+/* ---- 5 · Buttons ---------------------------------------------------- */
+.nx-btn {
+  background: var(--nx-accent);
+  color: #fff;
+  border: 1px solid transparent;
+  border-radius: var(--nx-radius-md);
+  box-shadow: none;
+  font-weight: var(--nx-fw-medium);
+  transition: background var(--nx-dur-fast) var(--nx-ease), border-color var(--nx-dur-fast) var(--nx-ease), opacity var(--nx-dur-fast) var(--nx-ease);
+}
+.nx-btn:hover:not(:disabled) { background: var(--nx-accent-hover); transform: none; filter: none; box-shadow: none; }
+.nx-btn:active:not(:disabled) { transform: translateY(0) scale(0.98); box-shadow: none; }
+.nx-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.nx-btn.ghost {
+  background: transparent; color: var(--nx-text-dim); border-color: var(--nx-border);
+}
+.nx-btn.ghost:hover:not(:disabled) { background: rgba(148, 163, 184, 0.08); color: var(--nx-text); border-color: var(--nx-border-strong); }
+.nx-btn.danger { background: var(--nx-danger); color: #fff; }
+.nx-btn.danger:hover:not(:disabled) { background: #dc2626; }
+.nx-btn.amber { background: var(--nx-warning); color: #1a1200; }
+.nx-btn.amber:hover:not(:disabled) { background: #d97706; }
+.nx-icon-btn {
+  background: transparent; border: 1px solid var(--nx-border); border-radius: var(--nx-radius-sm);
+  color: var(--nx-text-dim); box-shadow: none;
+  transition: background var(--nx-dur-fast) var(--nx-ease), color var(--nx-dur-fast) var(--nx-ease);
+  animation: none !important;
+}
+.nx-icon-btn:hover { background: rgba(148, 163, 184, 0.08); color: var(--nx-text); transform: none; filter: none; }
+.nx-cmd-send {
+  background: var(--nx-accent); color: #fff; border: none; box-shadow: none; animation: none !important;
+}
+.nx-cmd-send:hover:not(:disabled) { background: var(--nx-accent-hover); }
+.nx-cmd-send:disabled { opacity: 0.4; }
+
+/* ---- 6 · Inputs ----------------------------------------------------- */
+.nx-input, .nx-select, .nx-cmd-bar, .command-lab-textarea, .onboarding-input,
+.command-history-search-input, .simulated-transcript-input, .dashboard-chat-input,
+.chat-input, .reminder-form-grid input, .reminder-form-grid textarea, select.nx-input {
+  background: var(--nx-glass-inset);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-md);
+  box-shadow: none;
+  color: var(--nx-text);
+  transition: border-color var(--nx-dur-fast) var(--nx-ease), box-shadow var(--nx-dur-fast) var(--nx-ease);
+}
+.nx-input:focus, .nx-select:focus, .command-lab-textarea:focus, .onboarding-input:focus,
+.command-history-search-input:focus, .simulated-transcript-input:focus,
+.nx-cmd-bar:focus-within, .dashboard-chat-input:focus-within, .chat-input:focus-within {
+  border-color: var(--nx-accent);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+  outline: none;
+  animation: none !important;
+}
+::placeholder { color: var(--nx-text-faint); }
+
+/* ---- 7 · Chat (ChatGPT / Claude style) ------------------------------ */
+.chat-bubble .chat-bubble-body,
+.nxv-bubble { border-radius: var(--nx-radius-lg); }
+.chat-bubble.user .chat-bubble-body,
+.nxv-bubble.user {
+  background: rgba(59, 130, 246, 0.14);
+  border: 1px solid rgba(59, 130, 246, 0.22);
+  color: var(--nx-text);
+}
+.chat-bubble.assistant .chat-bubble-body,
+.nxv-bubble.assistant {
+  background: var(--nx-surface-2);
+  border: 1px solid var(--nx-border);
+  color: var(--nx-text);
+}
+.chat-thread, .nxos-chat-thread { scroll-behavior: smooth; }
+.chat-bubble-body pre, .chat-bubble-body code {
+  font-family: var(--nx-font-mono);
+  background: #0b1220;
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-sm);
+}
+.chat-bubble-body pre { padding: 12px 14px; overflow-x: auto; }
+.chat-bubble-body code { padding: 1px 5px; font-size: 0.9em; }
+.chat-bubble-body pre code { padding: 0; border: none; background: transparent; }
+.nx-suggestion {
+  background: var(--nx-surface-2); border: 1px solid var(--nx-border); color: var(--nx-text-dim);
+  border-radius: var(--nx-radius-pill);
+  transition: background var(--nx-dur-fast) var(--nx-ease), color var(--nx-dur-fast) var(--nx-ease);
+}
+.nx-suggestion:hover:not(:disabled) { background: rgba(148,163,184,0.1); color: var(--nx-text); }
+
+/* ---- 8 · Chips / badges --------------------------------------------- */
+.nx-chip {
+  background: var(--nx-surface-2); border: 1px solid var(--nx-border); color: var(--nx-text-dim);
+  border-radius: var(--nx-radius-pill); box-shadow: none;
+}
+.nx-chip.muted { background: transparent; }
+
+/* ---- 9 · Page hero — quieter ---------------------------------------- */
+.page-hero, .dash-hero, .nxos-hero { box-shadow: var(--nx-elev-1); }
+.dash-hero-title, .nxos-hero-title span {
+  -webkit-text-fill-color: currentColor; color: var(--nx-text);
+  background: none; animation: none;
+}

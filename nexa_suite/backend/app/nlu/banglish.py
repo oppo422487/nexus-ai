@@ -1,0 +1,93 @@
+"""Bangla/Banglish canonicalization for assistant intent routing."""
+
+from __future__ import annotations
+
+import re
+
+from app.nlu.normalizer import normalize_text
+
+PHRASE_REPLACEMENTS: tuple[tuple[str, str], ...] = (
+    (r"\bhw\s+r\s+u\b", "how are you"),
+    (r"\bhow\s+r\s+u\b", "how are you"),
+    (r"\bhow\s+are\s+u\b", "how are you"),
+    (r"\bkmn\s+aso\b", "kemon aso"),
+    (r"\bkemon\s+acho\b", "kemon aso"),
+    (r"\bki\s+korteso\b", "ki koro"),
+    (r"\bwhat\s+are\s+you\s+doing\b", "ki koro"),
+    (r"\bbanate\s+cai\b", "want to create"),
+    (r"\bbanaite\s+chai\b", "want to create"),
+    (r"\bbanate\s+chai\b", "want to create"),
+    (r"\bbanabo\b", "create"),
+    (r"\bbanaw\b", "create"),
+    (r"\bbanao\b", "create"),
+    (r"\bcode\s+dao\b", "code create"),
+    (r"\bcode\s+kore\s+dao\b", "code create"),
+    (r"\bhtml\s+css\s+diye\s+dao\b", "html css create"),
+    (r"\bhome\s+page\b", "homepage"),
+    (r"\blog\s+in\s+page\b", "login page"),
+    (r"\byutub\b", "youtube"),
+    (r"\byt\b", "youtube"),
+    (r"ইউটিউব", "youtube"),
+    (r"গুগল", "google"),
+    (r"গিটহাব", "github"),
+    (r"ফেসবুক", "facebook"),
+    (r"জিমেইল", "gmail"),
+    (r"চ্যাটজিপিটি", "chatgpt"),
+    (r"\bgaan\s+chalao\b", "song search"),
+    (r"\bgan\s+chalao\b", "song search"),
+    (r"বাংলা গান চালাও", "bangla song search"),
+    (r"গান চালাও", "song search"),
+    (r"ক্যালকুলেটর", "calculator"),
+    (r"নোটপ্যাড", "notepad"),
+    (r"পেইন্ট", "paint"),
+    (r"ক্রোম", "chrome"),
+    (r"ফাইল এক্সপ্লোরার", "file explorer"),
+    (r"ভিজুয়াল স্টুডিও কোড", "vscode"),
+    (r"ভিজুয়াল স্টুডিও কোড", "vscode"),
+    (r"মাইক্রোসফট ওয়ার্ড", "word"),
+    (r"মাইক্রোসফট ওয়ার্ড", "word"),
+    (r"এক্সেল", "excel"),
+    (r"ওপেন কর(?:ো|ুন)?", "open"),
+    (r"খুলে দাও", "open"),
+    (r"খুলে দিন", "open"),
+    (r"খোলো", "open"),
+    (r"খুলুন", "open"),
+    (r"তুমি কেমন আছ(?:ো|েন)", "kemon aso"),
+    (r"আপনি কেমন আছ(?:ো|েন)", "kemon aso"),
+    (r"কেমন আছ(?:ো|েন)", "kemon aso"),
+    (r"তোমার নাম কি", "tomar nam ki"),
+    (r"আপনার নাম কি", "tomar nam ki"),
+    (r"তুমি কে", "tumi ke"),
+    (r"আপনি কে", "apni ke"),
+    (r"তুমি কি করতে পারো", "tumi ki korte paro"),
+    (r"আপনি কি করতে পারেন", "tumi ki korte paro"),
+    (r"ধন্যবাদ", "thanks"),
+    (r"শুকরিয়া", "thanks"),
+    (r"শুকরিয়া", "thanks"),
+    (r"আসসালামু আলাইকুম", "assalamu alaikum"),
+    (r"সালাম", "salam"),
+    (r"আজকের খবর", "today news"),
+    (r"সর্বশেষ খবর", "latest news"),
+    (r"খুঁজে বলো", "search koro"),
+    (r"সার্চ করে বলো", "search koro"),
+    (r"মেসেজ দাও", "message dao"),
+    (r"কে বলো", " ke bolo "),
+    (r"বাংলা গান চালাও", "bangla song search"),
+    (r"গান চালাও", "song search"),
+    (r"\bvideo\s+chalao\b", "video search"),
+    (r"\bwhats\s+app\b", "whatsapp"),
+    (r"হোয়াটসঅ্যাপ", "whatsapp"),
+    (r"হোয়াটসঅ্যাপ", "whatsapp"),
+    (r"হোয়াটসঅ্যাপ", "whatsapp"),
+    (r"হোয়াটসঅ্যাপ", "whatsapp"),
+    (r"\bsms\s+dao\b", "message dao"),
+    (r"\bk\s+bolo\b", "ke bolo"),
+    (r"\bdraft\s+koro\b", "draft"),
+)
+
+
+def normalize_banglish(value: str | None) -> str:
+    text = normalize_text(value)
+    for pattern, replacement in PHRASE_REPLACEMENTS:
+        text = re.sub(pattern, replacement, text, flags=re.IGNORECASE)
+    return normalize_text(text)

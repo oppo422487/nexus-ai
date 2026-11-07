@@ -1,0 +1,127 @@
+/* ============================================================================
+   SYSTEM · ENVIRONMENT  — placement for the WebGL environment layer
+   The engine mounts a fixed, non-interactive canvas behind the shell content.
+   A soft vignette keeps the scene subtle behind text-dense regions.
+   ========================================================================== */
+
+.nx-env {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  /* Keep the whole scene visible (cinematic), with only a whisper of edge falloff
+     so the massive Core dominates the frame. */
+  -webkit-mask-image: radial-gradient(160% 150% at 60% 45%, #000 74%, rgba(0, 0, 0, 0.94) 92%, rgba(0, 0, 0, 0.82) 100%);
+  mask-image: radial-gradient(160% 150% at 60% 45%, #000 74%, rgba(0, 0, 0, 0.94) 92%, rgba(0, 0, 0, 0.82) 100%);
+}
+.nx-env canvas {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Lift the real UI above the environment layer (env = z-index 0). */
+.nx-shell > .nx-sidebar,
+.nx-shell > .nx-main {
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================================
+   AURORA + MOVING NEBULA — a screen-blended colour wash framing the WebGL
+   scene. Drifting neon blobs (cyan / violet / magenta / emerald) rendered with
+   GPU transforms only. Sits above the transparent canvas, below the UI, so it
+   tints the empty background without washing out text. Present even before the
+   WebGL layer streams in, so the shell never looks flat.
+   ========================================================================== */
+.nx-aurora {
+  position: fixed;
+  inset: -12%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  mix-blend-mode: screen;
+  opacity: 0.55;
+  filter: blur(2px);
+}
+.nx-aurora::before,
+.nx-aurora::after,
+.nx-aurora > i {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  will-change: transform;
+}
+/* cyan → blue, top-left drift */
+.nx-aurora::before {
+  width: 46vw; height: 46vw;
+  top: -8%; left: -6%;
+  background: radial-gradient(circle at 40% 40%, rgba(46, 242, 255, 0.55), transparent 62%);
+  animation: nxAuroraA 26s var(--nx-ease-in-out, ease-in-out) infinite;
+}
+/* violet → magenta, right drift */
+.nx-aurora::after {
+  width: 52vw; height: 52vw;
+  top: 6%; right: -12%; left: auto;
+  background: radial-gradient(circle at 50% 50%, rgba(178, 77, 255, 0.5), rgba(255, 61, 240, 0.28) 45%, transparent 66%);
+  animation: nxAuroraB 32s var(--nx-ease-in-out, ease-in-out) infinite;
+}
+/* emerald, bottom sweep (extra element) */
+.nx-aurora > i {
+  width: 40vw; height: 40vw;
+  bottom: -14%; left: 22%;
+  background: radial-gradient(circle at 50% 50%, rgba(16, 255, 184, 0.32), transparent 64%);
+  animation: nxAuroraC 38s var(--nx-ease-in-out, ease-in-out) infinite;
+}
+@keyframes nxAuroraA {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50%      { transform: translate3d(14vw, 8vh, 0) scale(1.18); }
+}
+@keyframes nxAuroraB {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1.05); }
+  50%      { transform: translate3d(-16vw, 10vh, 0) scale(0.85); }
+}
+@keyframes nxAuroraC {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(0.9); }
+  50%      { transform: translate3d(10vw, -12vh, 0) scale(1.2); }
+}
+/* The aurora breathes with the AI Core + surges on activity. */
+:root[data-ai-state="thinking"] .nx-aurora { opacity: 0.72; }
+:root[data-ai-mode="command"] .nx-aurora { opacity: 0.85; filter: blur(1px); }
+
+/* ============================================================================
+   PREMIUM PAGE TRANSITION — a one-shot light sweep across the content area
+   each time the keyed page remounts (enter-only, so it plays once on mount).
+   ========================================================================== */
+.nx-content { position: relative; }
+.nx-content::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    rgba(46, 242, 255, 0.12) 46%,
+    rgba(178, 77, 255, 0.10) 54%,
+    transparent 70%
+  );
+  background-size: 260% 100%;
+  animation: nxPageSweep 720ms var(--nx-ease-out, ease-out) 1 both;
+  mix-blend-mode: screen;
+}
+@keyframes nxPageSweep {
+  0%   { background-position: 160% 0; opacity: 0; }
+  30%  { opacity: 1; }
+  100% { background-position: -60% 0; opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nx-aurora::before,
+  .nx-aurora::after,
+  .nx-aurora > i { animation: none !important; }
+  .nx-content::after { display: none; }
+}

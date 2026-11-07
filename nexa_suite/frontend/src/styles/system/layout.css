@@ -1,0 +1,14 @@
+/* ============================================================================
+   SYSTEM · LAYOUT  — the OS shell canvas
+   The two-column shell grid itself is defined in the legacy shell layer; here
+   we own the ambient canvas background so it reads from tokens.
+   ========================================================================== */
+
+/* Static, calm space canvas (no animated effects in Phase A). */
+.nx-shell {
+  background:
+    radial-gradient(1200px 620px at 74% -12%, rgba(99, 102, 241, 0.16), transparent 60%),
+    radial-gradient(1000px 540px at -10% 112%, rgba(34, 211, 238, 0.10), transparent 56%),
+    linear-gradient(160deg, var(--nx-space-1) 0%, var(--nx-space-0) 48%, #070512 100%);
+  color: var(--nx-text);
+}
